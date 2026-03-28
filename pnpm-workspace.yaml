@@ -1,0 +1,5 @@
+# pnpm Workspace
+packages:
+  - 'apps/*'
+  - 'packages/*'
+  - 'backend/*'

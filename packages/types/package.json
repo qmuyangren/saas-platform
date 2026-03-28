@@ -1,0 +1,12 @@
+{
+  "name": "@saas/types",
+  "version": "1.0.0",
+  "description": "SaaS 平台共享类型定义",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "lint": "eslint src/"
+  },
+  "keywords": ["types", "typescript", "saas"],
+  "license": "MIT"
+}

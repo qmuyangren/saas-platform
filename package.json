@@ -1,0 +1,30 @@
+{
+  "name": "saas-platform",
+  "version": "1.0.0",
+  "description": "模块化 SaaS 平台",
+  "private": true,
+  "scripts": {
+    "dev:admin": "pnpm --filter admin dev",
+    "dev:api": "pnpm --filter admin-api dev",
+    "dev": "pnpm --parallel dev",
+    "build:admin": "pnpm --filter admin build",
+    "build": "pnpm -r build",
+    "lint": "pnpm -r lint",
+    "test": "pnpm -r test"
+  },
+  "keywords": [
+    "saas",
+    "platform",
+    "react",
+    "nodejs"
+  ],
+  "author": "小虾米",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20",
+    "pnpm": ">=8"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.0"
+  }
+}
