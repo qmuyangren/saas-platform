@@ -7,13 +7,16 @@ import {
   Body,
   Param,
   Query,
+  UseGuards,
+  Request,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { UsersService } from './users.service';
-import { CurrentUser } from '../../common/decorators/current-user.decorator';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @ApiTags('users', '用户管理')
 @Controller('users')
+@UseGuards(JwtAuthGuard)
 @ApiBearerAuth()
 export class UsersController {
   constructor(private usersService: UsersService) {}
@@ -48,7 +51,7 @@ export class UsersController {
 
   @Delete(':id')
   @ApiOperation({ summary: '删除用户' })
-  async remove(@Param('id') id: string, @CurrentUser() user: any) {
-    return this.usersService.remove(id, user.sub);
+  async remove(@Param('id') id: string) {
+    return this.usersService.remove(id);
   }
 }

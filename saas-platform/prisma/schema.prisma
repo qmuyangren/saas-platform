@@ -1,0 +1,463 @@
+// SaaS 平台数据库 Schema
+// 基于 MySQL 8.0
+// 字段命名：f_前缀 + 下划线命名
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// ==================== 用户表 ====================
+
+/// 用户表 (合并管理员)
+model BaseUser {
+  id              String   @id @default(uuid()) @db.VarChar(50)
+  tenantId        String   @default("0") @db.VarChar(50)
+  
+  // 账号信息
+  account         String?  @db.VarChar(50)
+  password        String   @db.VarChar(50)
+  secretkey       String?  @db.VarChar(50)
+  
+  // 基本信息
+  realName        String?  @db.VarChar(50)
+  nickName        String?  @db.VarChar(50)
+  headIcon        String?  @db.Text
+  gender          String?  @db.VarChar(50)
+  birthday        DateTime? @db.DateTime
+  nation          String?  @db.VarChar(50)
+  nativePlace     String?  @db.VarChar(50)
+  
+  // 联系方式
+  mobilePhone     String?  @db.VarChar(20)
+  telePhone       String?  @db.VarChar(20)
+  landline        String?  @db.VarChar(50)
+  email           String?  @db.VarChar(50)
+  postalAddress   String?  @db.VarChar(500)
+  
+  // 个人信息
+  entryDate       DateTime? @db.DateTime
+  certificatesType String? @db.VarChar(50)
+  certificatesNumber String? @db.VarChar(50)
+  education       String?  @db.VarChar(50)
+  urgentContacts  String?  @db.VarChar(50)
+  urgentTelePhone String?  @db.VarChar(50)
+  signature       String?  @db.VarChar(500)
+  
+  // 登录信息
+  quickQuery      String?  @db.VarChar(100)
+  firstLogTime    DateTime? @db.DateTime
+  firstLogIp      String?  @db.VarChar(50)
+  prevLogTime     DateTime? @db.DateTime
+  prevLogIp       String?  @db.VarChar(50)
+  lastLogTime     DateTime? @db.DateTime
+  lastLogIp       String?  @db.VarChar(50)
+  logSuccessCount Int      @default(0)
+  logErrorCount   Int      @default(0)
+  changePasswordDate DateTime? @db.DateTime
+  
+  // 系统设置
+  language        String?  @db.VarChar(50)
+  theme           String?  @db.VarChar(50)
+  
+  // 组织信息
+  isAdministrator Int      @default(0)
+  managerId       String?  @db.VarChar(50)
+  organizeId      String?  @db.VarChar(50)
+  positionId      String?  @db.VarChar(50)
+  roleId          String?  @db.Text
+  portalId        String?  @db.Text
+  groupId         String?  @db.VarChar(50)
+  rank            String?  @db.VarChar(50)
+  standing        String?  @db.VarChar(50)
+  appStanding     String?  @db.VarChar(50)
+  
+  // 状态
+  lockMark        Int      @default(0)
+  unlockTime      DateTime? @db.DateTime
+  handoverMark    Int      @default(0)
+  handoverUserid  String?  @db.VarChar(100)
+  enabledMark     Int      @default(1)
+  
+  // 应用
+  appSystemId     String?  @db.VarChar(50)
+  
+  // 描述
+  description     String?  @db.VarChar(500)
+  
+  // 审计字段
+  sortCode        BigInt   @default(0)
+  creatorTime     DateTime @default(now()) @db.DateTime
+  creatorUserId   String?  @db.VarChar(50)
+  lastModifyTime  DateTime @updatedAt @db.DateTime
+  lastModifyUserId String? @db.VarChar(50)
+  deleteTime      DateTime? @db.DateTime
+  deleteUserId    String?  @db.VarChar(50)
+  deleteMark      Int      @default(0)
+  
+  // 关联
+  devices         BaseUserDevice[]
+  extra           BaseUserExtra?
+  oldPasswords    BaseUserOldPassword[]
+  relations       BaseUserRelation[]
+  sessions        Session[]
+  auditLogs       BaseSysLog[]
+  
+  // 索引
+  @@unique([account, tenantId])
+  @@index([mobilePhone])
+  @@index([email])
+  @@index([organizeId])
+  @@index([deleteMark])
+  @@index([tenantId])
+  @@map("base_user")
+}
+
+// ==================== 用户设备表 ====================
+
+model BaseUserDevice {
+  id              String   @id @default(uuid()) @db.VarChar(50)
+  tenantId        String   @default("0") @db.VarChar(50)
+  
+  clientId        String?  @db.VarChar(50)
+  userId          String?  @db.VarChar(50)
+  enabledMark     Int      @default(1)
+  
+  // 审计字段
+  sortCode        BigInt   @default(0)
+  creatorTime     DateTime @default(now()) @db.DateTime
+  creatorUserId   String?  @db.VarChar(50)
+  lastModifyTime  DateTime @updatedAt @db.DateTime
+  lastModifyUserId String? @db.VarChar(50)
+  deleteTime      DateTime? @db.DateTime
+  deleteUserId    String?  @db.VarChar(50)
+  deleteMark      Int      @default(0)
+  
+  // 关联
+  user            BaseUser @relation(fields: [userId], references: [id])
+  
+  // 索引
+  @@index([userId])
+  @@index([deleteMark])
+  @@index([tenantId])
+  @@map("base_user_device")
+}
+
+// ==================== 用户额外信息表 ====================
+
+model BaseUserExtra {
+  id              String   @id @default(uuid()) @db.VarChar(50)
+  tenantId        String   @default("0") @db.VarChar(50)
+  
+  propertyJson    String?  @db.Text
+  commonMenu      String?  @db.Text
+  preferenceJson  String?  @db.Text
+  userId          String?  @db.VarChar(50)
+  description     String?  @db.VarChar(500)
+  enabledMark     Int      @default(1)
+  
+  // 审计字段
+  sortCode        BigInt   @default(0)
+  creatorTime     DateTime @default(now()) @db.DateTime
+  creatorUserId   String?  @db.VarChar(50)
+  lastModifyTime  DateTime @updatedAt @db.DateTime
+  lastModifyUserId String? @db.VarChar(50)
+  deleteTime      DateTime? @db.DateTime
+  deleteUserId    String?  @db.VarChar(50)
+  deleteMark      Int      @default(0)
+  
+  // 关联
+  user            BaseUser? @relation(fields: [userId], references: [id])
+  
+  // 索引
+  @@unique([userId, tenantId])
+  @@index([deleteMark])
+  @@index([tenantId])
+  @@map("base_user_extra")
+}
+
+// ==================== 用户旧密码记录表 ====================
+
+model BaseUserOldPassword {
+  id              String   @id @default(uuid()) @db.VarChar(50)
+  tenantId        String   @default("0") @db.VarChar(50)
+  
+  userId          String?  @db.VarChar(50)
+  account         String?  @db.VarChar(50)
+  oldPassword     String?  @db.VarChar(50)
+  secretkey       String?  @db.VarChar(50)
+  
+  // 审计字段
+  sortCode        BigInt   @default(0)
+  creatorTime     DateTime @default(now()) @db.DateTime
+  creatorUserId   String?  @db.VarChar(50)
+  lastModifyTime  DateTime @updatedAt @db.DateTime
+  lastModifyUserId String? @db.VarChar(50)
+  deleteTime      DateTime? @db.DateTime
+  deleteUserId    String?  @db.VarChar(50)
+  deleteMark      Int      @default(0)
+  
+  // 关联
+  user            BaseUser @relation(fields: [userId], references: [id])
+  
+  // 索引
+  @@index([userId])
+  @@index([deleteMark])
+  @@index([tenantId])
+  @@map("base_user_old_password")
+}
+
+// ==================== 用户关系表 ====================
+
+model BaseUserRelation {
+  id              String   @id @default(uuid()) @db.VarChar(50)
+  tenantId        String   @default("0") @db.VarChar(50)
+  
+  userId          String?  @db.VarChar(50)
+  objectType      String?  @db.VarChar(50)
+  objectId        String?  @db.VarChar(50)
+  
+  // 审计字段
+  sortCode        BigInt   @default(0)
+  creatorTime     DateTime @default(now()) @db.DateTime
+  creatorUserId   String?  @db.VarChar(50)
+  lastModifyTime  DateTime @updatedAt @db.DateTime
+  lastModifyUserId String? @db.VarChar(50)
+  deleteTime      DateTime? @db.DateTime
+  deleteUserId    String?  @db.VarChar(50)
+  deleteMark      Int      @default(0)
+  
+  // 关联
+  user            BaseUser @relation(fields: [userId], references: [id])
+  
+  // 索引
+  @@index([userId])
+  @@index([objectType])
+  @@index([objectId])
+  @@index([deleteMark])
+  @@index([tenantId])
+  @@map("base_user_relation")
+}
+
+// ==================== 角色表 ====================
+
+model BaseRole {
+  id              String   @id @default(uuid()) @db.VarChar(50)
+  tenantId        String   @default("0") @db.VarChar(50)
+  
+  name            String?  @db.VarChar(100)
+  code            String?  @db.VarChar(50)
+  description     String?  @db.VarChar(500)
+  permissions     String?  @db.Text
+  enabledMark     Int      @default(1)
+  isSystem        Int      @default(0)
+  
+  // 审计字段
+  sortCode        BigInt   @default(0)
+  creatorTime     DateTime @default(now()) @db.DateTime
+  creatorUserId   String?  @db.VarChar(50)
+  lastModifyTime  DateTime @updatedAt @db.DateTime
+  lastModifyUserId String? @db.VarChar(50)
+  deleteTime      DateTime? @db.DateTime
+  deleteUserId    String?  @db.VarChar(50)
+  deleteMark      Int      @default(0)
+  
+  // 索引
+  @@unique([code, tenantId])
+  @@index([deleteMark])
+  @@index([tenantId])
+  @@map("base_role")
+}
+
+// ==================== Session 表 ====================
+
+model Session {
+  id              String   @id @default(uuid()) @db.VarChar(50)
+  tenantId        String   @default("0") @db.VarChar(50)
+  
+  userId          String?  @db.VarChar(50)
+  token           String?  @unique @db.VarChar(500)
+  refreshToken    String?  @unique @db.VarChar(500)
+  device          String?  @db.VarChar(100)
+  ip              String?  @db.VarChar(50)
+  userAgent       String?  @db.VarChar(500)
+  expiresAt       DateTime @db.DateTime
+  
+  createdAt       DateTime @default(now()) @db.DateTime
+  
+  // 关联
+  user            BaseUser? @relation(fields: [userId], references: [id])
+  
+  // 索引
+  @@index([userId])
+  @@index([token])
+  @@index([deleteMark])
+  @@index([tenantId])
+  @@map("session")
+}
+
+// ==================== 系统日志表 ====================
+
+model BaseSysLog {
+  id              String   @id @default(uuid()) @db.VarChar(50)
+  tenantId        String   @default("0") @db.VarChar(50)
+  
+  bizId           String?  @db.VarChar(50)
+  userId          String?  @db.VarChar(50)
+  userName        String?  @db.VarChar(100)
+  logType         Int?     @db.Int
+  logLevel        Int?     @db.Int
+  ipAddress       String?  @db.VarChar(50)
+  ipAddressLocation String? @db.VarChar(100)
+  requestUrl      String?  @db.VarChar(500)
+  requestMethod   String?  @db.VarChar(50)
+  requestDuration Int?     @db.Int
+  requestParam    String?  @db.Text
+  requestTarget   String?  @db.Text
+  content         String?  @db.Text
+  platform        String?  @db.VarChar(100)
+  browser         String?  @db.VarChar(100)
+  moduleId        String?  @db.VarChar(50)
+  moduleName      String?  @db.VarChar(100)
+  objectId        String?  @db.VarChar(50)
+  description     String?  @db.VarChar(500)
+  isLoginSuccess  Int?     @db.Int
+  loginType       Int?     @db.Int
+  
+  // 审计字段
+  sortCode        BigInt   @default(0)
+  creatorTime     DateTime @default(now()) @db.DateTime
+  creatorUserId   String?  @db.VarChar(50)
+  lastModifyTime  DateTime @updatedAt @db.DateTime
+  lastModifyUserId String? @db.VarChar(50)
+  deleteTime      DateTime? @db.DateTime
+  deleteUserId    String?  @db.VarChar(50)
+  deleteMark      Int      @default(0)
+  
+  // 关联
+  user            BaseUser? @relation(fields: [userId], references: [id])
+  
+  // 索引
+  @@index([bizId])
+  @@index([userId])
+  @@index([logType])
+  @@index([ipAddress])
+  @@index([creatorTime])
+  @@index([deleteMark])
+  @@index([tenantId])
+  @@map("base_sys_log")
+}
+
+// ==================== 字典类型表 ====================
+
+model BaseDictType {
+  id              String   @id @default(uuid()) @db.VarChar(50)
+  tenantId        String   @default("0") @db.VarChar(50)
+  
+  name            String?  @db.VarChar(100)
+  code            String?  @db.VarChar(50)
+  description     String?  @db.VarChar(500)
+  enabledMark     Int      @default(1)
+  isSystem        Int      @default(0)
+  
+  // 审计字段
+  sortCode        BigInt   @default(0)
+  creatorTime     DateTime @default(now()) @db.DateTime
+  creatorUserId   String?  @db.VarChar(50)
+  lastModifyTime  DateTime @updatedAt @db.DateTime
+  lastModifyUserId String? @db.VarChar(50)
+  deleteTime      DateTime? @db.DateTime
+  deleteUserId    String?  @db.VarChar(50)
+  deleteMark      Int      @default(0)
+  
+  // 关联
+  items           BaseDictItem[]
+  
+  // 索引
+  @@unique([code, tenantId])
+  @@index([deleteMark])
+  @@index([tenantId])
+  @@map("base_dict_type")
+}
+
+// ==================== 字典项表 ====================
+
+model BaseDictItem {
+  id              String   @id @default(uuid()) @db.VarChar(50)
+  tenantId        String   @default("0") @db.VarChar(50)
+  
+  typeId          String?  @db.VarChar(50)
+  label           String?  @db.VarChar(100)
+  value           String?  @db.VarChar(100)
+  code            String?  @db.VarChar(50)
+  color           String?  @db.VarChar(20)
+  icon            String?  @db.VarChar(100)
+  enabledMark     Int      @default(1)
+  extra           String?  @db.Text
+  
+  // 审计字段
+  sortCode        BigInt   @default(0)
+  creatorTime     DateTime @default(now()) @db.DateTime
+  creatorUserId   String?  @db.VarChar(50)
+  lastModifyTime  DateTime @updatedAt @db.DateTime
+  lastModifyUserId String? @db.VarChar(50)
+  deleteTime      DateTime? @db.DateTime
+  deleteUserId    String?  @db.VarChar(50)
+  deleteMark      Int      @default(0)
+  
+  // 关联
+  type            BaseDictType? @relation(fields: [typeId], references: [id])
+  
+  // 索引
+  @@index([typeId])
+  @@index([deleteMark])
+  @@index([tenantId])
+  @@unique([typeId, value, tenantId])
+  @@map("base_dict_item")
+}
+
+// ==================== 公告表 ====================
+
+model BaseAnnouncement {
+  id              String   @id @default(uuid()) @db.VarChar(50)
+  tenantId        String   @default("0") @db.VarChar(50)
+  
+  title           String?  @db.VarChar(200)
+  content         String?  @db.Text
+  summary         String?  @db.VarChar(500)
+  type            String?  @db.VarChar(20)
+  category        String?  @db.VarChar(50)
+  scope           String?  @db.VarChar(20)
+  priority        String?  @db.VarChar(20)
+  status          String?  @db.VarChar(20)
+  publishedBy     String?  @db.VarChar(50)
+  publishedAt     DateTime? @db.DateTime
+  startTime       DateTime? @db.DateTime
+  endTime         DateTime? @db.DateTime
+  isTop           Int      @default(0)
+  topUntil        DateTime? @db.DateTime
+  viewCount       Int      @default(0)
+  attachments     String?  @db.Text
+  
+  // 审计字段
+  sortCode        BigInt   @default(0)
+  creatorTime     DateTime @default(now()) @db.DateTime
+  creatorUserId   String?  @db.VarChar(50)
+  lastModifyTime  DateTime @updatedAt @db.DateTime
+  lastModifyUserId String? @db.VarChar(50)
+  deleteTime      DateTime? @db.DateTime
+  deleteUserId    String?  @db.VarChar(50)
+  deleteMark      Int      @default(0)
+  
+  // 索引
+  @@index([type])
+  @@index([status])
+  @@index([publishedAt])
+  @@index([deleteMark])
+  @@index([tenantId])
+  @@map("base_announcement")
+}

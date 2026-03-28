@@ -1,21 +1,16 @@
 import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
+import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class UsersService {
   constructor(private prisma: PrismaService) {}
 
-  /**
-   * 获取用户列表
-   */
   async findAll(page: number = 1, pageSize: number = 20, keyword?: string) {
     const where = keyword
       ? {
           OR: [
             { account: { contains: keyword } },
-            { realName: { contains: keyword } },
-            { mobilePhone: { contains: keyword } },
-            { email: { contains: keyword } },
           ],
         }
       : {};
@@ -26,13 +21,13 @@ export class UsersService {
         where,
         skip: (page - 1) * pageSize,
         take: pageSize,
-        orderBy: { sortCode: 'asc' },
+        orderBy: { createdAt: 'desc' },
       }),
     ]);
 
     return {
       list: users.map((user) => {
-        const { password, secretkey, ...userInfo } = user;
+        const { password, ...userInfo } = user;
         return userInfo;
       }),
       pagination: {
@@ -44,9 +39,6 @@ export class UsersService {
     };
   }
 
-  /**
-   * 获取用户详情
-   */
   async findOne(id: string) {
     const user = await this.prisma.baseUser.findUnique({
       where: { id },
@@ -56,15 +48,11 @@ export class UsersService {
       throw new NotFoundException('用户不存在');
     }
 
-    const { password, secretkey, ...userInfo } = user;
+    const { password, ...userInfo } = user;
     return userInfo;
   }
 
-  /**
-   * 创建用户
-   */
   async create(data: any) {
-    // 检查账户是否已存在
     const existing = await this.prisma.baseUser.findFirst({
       where: { account: data.account },
     });
@@ -73,19 +61,19 @@ export class UsersService {
       throw new BadRequestException('账户已存在');
     }
 
-    // TODO: 密码加密
+    const hashedPassword = await bcrypt.hash(data.password, 10);
 
     const user = await this.prisma.baseUser.create({
-      data,
+      data: {
+        account: data.account,
+        password: hashedPassword,
+      },
     });
 
-    const { password, secretkey, ...userInfo } = user;
+    const { password, ...userInfo } = user;
     return userInfo;
   }
 
-  /**
-   * 更新用户
-   */
   async update(id: string, data: any) {
     const user = await this.prisma.baseUser.findUnique({
       where: { id },
@@ -95,19 +83,20 @@ export class UsersService {
       throw new NotFoundException('用户不存在');
     }
 
+    if (data.password) {
+      data.password = await bcrypt.hash(data.password, 10);
+    }
+
     const updated = await this.prisma.baseUser.update({
       where: { id },
       data,
     });
 
-    const { password, secretkey, ...userInfo } = updated;
+    const { password, ...userInfo } = updated;
     return userInfo;
   }
 
-  /**
-   * 删除用户（软删除）
-   */
-  async remove(id: string, userId: string) {
+  async remove(id: string) {
     const user = await this.prisma.baseUser.findUnique({
       where: { id },
     });
@@ -116,13 +105,8 @@ export class UsersService {
       throw new NotFoundException('用户不存在');
     }
 
-    await this.prisma.baseUser.update({
+    await this.prisma.baseUser.delete({
       where: { id },
-      data: {
-        deleteMark: 1,
-        deleteTime: new Date(),
-        deleteUserId: userId,
-      },
     });
 
     return { message: '删除成功' };
