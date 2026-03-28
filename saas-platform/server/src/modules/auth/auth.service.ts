@@ -52,7 +52,6 @@ export class AuthService {
         userId: user.id,
         token: accessToken,
         refreshToken: refreshToken,
-        expiresAt: new Date(Date.now() + 2 * 60 * 60 * 1000),
       },
     });
 

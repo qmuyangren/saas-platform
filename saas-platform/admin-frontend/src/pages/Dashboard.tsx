@@ -1,9 +1,13 @@
-const DashboardPage = () => {
+import MainLayout from '@/components/Layout/MainLayout';
+
+const DashboardPage: React.FC = () => {
   return (
-    <div>
-      <h1>欢迎使用 SaaS 平台管理后台</h1>
-      <p>这是首页，后续会添加更多功能模块</p>
-    </div>
+    <MainLayout>
+      <div>
+        <h1>欢迎使用 SaaS 平台</h1>
+        <p>这是仪表盘页面</p>
+      </div>
+    </MainLayout>
   );
 };
 

@@ -8,22 +8,18 @@ datasource db {
 }
 
 model BaseUser {
-  id              String   @id @default(uuid()) @db.VarChar(50)
-  account         String?  @unique @db.VarChar(50)
-  password        String   @db.VarChar(50)
-  createdAt       DateTime @default(now()) @db.Timestamp(6)
-  updatedAt       DateTime @updatedAt @db.Timestamp(6)
+  id        String   @id @default(uuid()) @db.VarChar(50)
+  account   String?  @unique @db.VarChar(50)
+  password  String   @db.VarChar(255)
   
   @@index([account])
 }
 
 model Session {
-  id           String   @id @default(uuid()) @db.VarChar(50)
-  userId       String   @db.VarChar(50)
-  token        String   @unique @db.VarChar(500)
-  refreshToken String   @unique @db.VarChar(500)
-  expiresAt    DateTime @db.Timestamp(6)
-  createdAt    DateTime @default(now()) @db.Timestamp(6)
+  id           String @id @default(uuid()) @db.VarChar(50)
+  userId       String @db.VarChar(50)
+  token        String @unique @db.VarChar(500)
+  refreshToken String @unique @db.VarChar(500)
   
   @@index([userId])
   @@index([token])
