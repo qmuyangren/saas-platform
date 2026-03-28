@@ -1,7 +1,7 @@
 ---
 name: developer
 description: "全栈开发技能。实现功能 + 单元测试 + 项目启动验证 + Chrome MCP 联调测试。"
-model: qwen3.5-plus
+model: bailian/qwen3-coder-next
 ---
 
 # Developer — 全栈开发

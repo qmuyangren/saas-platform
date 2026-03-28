@@ -1,7 +1,7 @@
 ---
 name: product-ceo
 description: "YC Office Hours 风格的产品需求分析。用于需求澄清、前提挑战、优先级确定。"
-model: qwen3.5-plus
+model: bailian/qwen3.5-plus
 ---
 
 # Product CEO — 产品需求分析

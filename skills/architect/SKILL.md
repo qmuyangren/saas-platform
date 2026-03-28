@@ -1,7 +1,7 @@
 ---
 name: architect
 description: "架构设计技能。负责系统架构、数据流图、错误路径映射、技术选型。"
-model: qwen3.5-plus
+model: bailian/qwen3-max-2026-01-23
 ---
 
 # Architect — 架构设计

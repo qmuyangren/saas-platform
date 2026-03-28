@@ -2,28 +2,37 @@
 
 ## 推荐配置
 
-### 统一模型策略 ⭐
+### 混合模型策略 ⭐⭐ (推荐)
 
-**所有角色使用同一模型：`qwen3.5-plus`**
+**根据角色能力需求分配最优模型：**
 
 ```yaml
 # skills/product-ceo/SKILL.md
-model: qwen3.5-plus
+model: bailian/qwen3.5-plus        # 综合能力最强
 
 # skills/architect/SKILL.md
-model: qwen3.5-plus
+model: bailian/qwen3-max-2026-01-23  # 推理能力最强 ⭐
 
 # skills/developer/SKILL.md
-model: qwen3.5-plus
+model: bailian/qwen3-coder-next    # 代码能力最强 ⭐
 
 # skills/qa-lead/SKILL.md
-model: qwen3.5-plus
+model: bailian/qwen3.5-plus        # 综合能力最强
 
 # skills/release-engineer/SKILL.md
-model: qwen3.5-plus
+model: bailian/qwen3.5-plus        # 综合能力最强
 ```
 
-## 为什么统一模型？
+## 模型能力对比
+
+| 模型 | 优势 | 适合角色 |
+|------|------|----------|
+| **qwen3.5-plus** | 综合能力最强，1M 上下文 | Product CEO, QA Lead, Release Engineer |
+| **qwen3-max-2026-01-23** | 推理能力最强 | Architect (架构设计) |
+| **qwen3-coder-next** | 代码能力最强 | Developer (代码实现) |
+| **qwen3-coder-plus** | 代码能力强，1M 上下文 | Developer (备选) |
+
+## 为什么混合模型？
 
 ### 问题：多模型导致理解不一致
 
