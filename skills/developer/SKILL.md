@@ -70,6 +70,19 @@ apps/ecommerce/backend/src/
 - 遵循类型定义
 - 错误处理完整
 - 日志记录清晰
+- **无敏感信息泄露**
+
+**代码规范**:
+- TypeScript 严格模式
+- 函数有返回类型注解
+- 避免使用 `any`
+- 语义化命名
+
+**安全要求**:
+- 参数化查询 (防 SQL 注入)
+- 输入验证 (Zod)
+- 密码 bcrypt 加密
+- 日志脱敏
 
 ### Step 3: 实现前端页面
 
@@ -85,6 +98,19 @@ apps/ecommerce/frontend/src/
 - 遵循设计文档
 - 处理加载/错误状态
 - 响应式布局
+- **XSS 防护**
+
+**代码规范**:
+- 组件 PascalCase
+- Props 类型定义
+- 语义化 HTML
+- 无障碍支持
+
+**安全要求**:
+- 用户输入转义
+- Token 安全存储 (HttpOnly Cookie)
+- CSP 头配置
+- 避免 dangerouslySetInnerHTML
 
 ### Step 4: 项目启动验证 ← 关键！
 
@@ -168,7 +194,35 @@ if (联调失败):
   → 直到通过
 ```
 
-### Step 6: 单元测试
+### Step 6: 代码规范检查 ← 新增！
+
+```bash
+# ESLint 检查
+exec: npx eslint 'src/**/*.ts'
+
+# Prettier 检查
+exec: npx prettier --check 'src/**/*.ts'
+
+# TypeScript 编译检查
+exec: npx tsc --noEmit
+
+# 敏感信息扫描
+exec: git secrets --scan
+
+# 依赖安全扫描
+exec: npm audit
+```
+
+**检查清单**:
+- [ ] ESLint 无错误
+- [ ] Prettier 格式化通过
+- [ ] TypeScript 编译通过
+- [ ] 无敏感信息泄露
+- [ ] 无已知漏洞依赖
+
+---
+
+### Step 7: 单元测试
 
 ```bash
 # 运行测试
@@ -183,7 +237,7 @@ exec: cat coverage/coverage-summary.json
 # 要求：关键路径 100%
 ```
 
-### Step 7: Git 提交
+### Step 8: Git 提交
 
 ```bash
 # 检查 Git 状态
@@ -210,7 +264,11 @@ exec: git push origin feature/user-login
 - `docs:` - 文档
 - `refactor:` - 重构
 
-### Step 8: 验收报告
+**Git Hook**:
+- pre-commit: ESLint + Prettier
+- pre-push: 测试 + 类型检查
+
+### Step 9: 验收报告
 
 输出验收报告：
 
@@ -234,10 +292,23 @@ exec: git push origin feature/user-login
 - [ ] 网络请求正确
 - [ ] 无控制台错误
 
+## 代码规范
+- [ ] ESLint 检查通过
+- [ ] Prettier 格式化通过
+- [ ] TypeScript 编译通过
+- [ ] 无敏感信息泄露
+- [ ] 命名规范符合
+
 ## 单元测试
 - [ ] 测试全部通过
 - [ ] 覆盖率 XX%
 - [ ] 关键路径 100%
+
+## 安全扫描
+- [ ] npm audit 通过
+- [ ] 无已知漏洞依赖
+- [ ] 密码加密正确
+- [ ] Token 安全存储
 
 ## 问题修复
 [记录发现的问题及修复过程]
@@ -256,6 +327,9 @@ exec: git push origin feature/user-login
 - ✅ 前后端联调通过
 - ✅ Chrome MCP 验证通过
 - ✅ 单元测试通过 (覆盖率≥80%)
+- ✅ 代码规范检查通过
+- ✅ 安全扫描通过
+- ✅ 无敏感信息泄露
 - ✅ 代码符合架构设计
 
 ## 关键原则
