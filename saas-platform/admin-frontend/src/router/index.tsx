@@ -5,8 +5,9 @@ import LoginPage from '@/pages/Login';
 import DashboardPage from '@/pages/Dashboard';
 import ChangePasswordPage from '@/pages/ChangePassword';
 
-// 公开路由（不需要认证）
-const publicRoutes: RouteObject[] = [
+// 所有路由配置
+const routes: RouteObject[] = [
+  // 公开路由（不需要认证）
   {
     path: '/login',
     element: <LoginPage />,
@@ -15,10 +16,8 @@ const publicRoutes: RouteObject[] = [
     path: '/auth/change-password',
     element: <ChangePasswordPage />,
   },
-];
-
-// 受保护的路由（需要认证）
-const protectedRoutes: RouteObject[] = [
+  
+  // 受保护的路由（需要认证）
   {
     path: '/',
     element: (
@@ -48,7 +47,7 @@ const protectedRoutes: RouteObject[] = [
   },
 ];
 
-// 合并所有路由
-const router = createBrowserRouter([...publicRoutes, ...protectedRoutes]);
+// 创建路由
+const router = createBrowserRouter(routes);
 
 export default router;
