@@ -1,6 +1,6 @@
 # 项目目录结构规范
 
-**版本**: v1.0  
+**版本**: v2.0  
 **更新时间**: 2026-03-28  
 **用途**: 统一项目目录结构
 
@@ -9,119 +9,91 @@
 ## 完整目录结构
 
 ```
-/workspace/
+saas-platform/                    # 一个 Git 仓库 ⭐
 │
-├── 📁 .git/                    # Git 仓库
-├── 📁 .openclaw/               # OpenClaw 配置
+├── 📁 server/                    # 【统一后端服务】
+│   ├── src/
+│   │   ├── controllers/          # 控制器
+│   │   ├── services/             # 服务层
+│   │   ├── routes/               # 路由
+│   │   ├── middleware/           # 中间件
+│   │   ├── utils/                # 工具函数
+│   │   └── index.ts              # 入口文件
+│   ├── prisma/
+│   │   ├── schema.prisma         # 数据模型
+│   │   └── migrations/           # 数据库迁移
+│   ├── package.json
+│   ├── tsconfig.json
+│   └── README.md
 │
-├── 📄 README.md                # 项目总说明
-├── 📄 package.json             # 根 package 配置
-├── 📄 pnpm-workspace.yaml      # pnpm 工作区配置
-├── 📄 pnpm-lock.yaml           # 依赖锁定
-├── 📄 .gitignore               # Git 忽略文件
+├── 📁 admin-frontend/            # 【后台管理前端】⭐
+│   ├── src/
+│   │   ├── api/                  # API 调用
+│   │   │   ├── request.ts        # axios 实例
+│   │   │   └── auth.ts           # 认证 API
+│   │   ├── assets/               # 静态资源
+│   │   ├── components/           # 业务组件
+│   │   ├── hooks/                # 自定义 Hooks
+│   │   ├── layouts/              # 布局组件
+│   │   ├── pages/                # 页面
+│   │   │   ├── Login.tsx         # 登录页
+│   │   │   ├── ChangePassword.tsx # 改密页
+│   │   │   └── Dashboard.tsx     # 首页
+│   │   ├── router/               # 路由配置
+│   │   ├── stores/               # 状态管理
+│   │   │   └── authStore.ts      # 认证状态
+│   │   ├── types/                # 类型定义
+│   │   ├── utils/                # 工具函数
+│   │   ├── App.tsx               # 根组件
+│   │   ├── main.tsx              # 入口文件
+│   │   └── index.css             # 全局样式
+│   ├── public/                   # 公共资源
+│   ├── package.json
+│   ├── tsconfig.json
+│   ├── vite.config.ts
+│   └── README.md
 │
-├── 📁 apps/                    # 【应用代码】
-│   ├── admin/                  # 后台管理系统 ⭐
-│   │   ├── src/
-│   │   │   ├── api/            # API 调用
-│   │   │   ├── assets/         # 静态资源
-│   │   │   ├── components/     # 业务组件
-│   │   │   ├── hooks/          # 自定义 Hooks
-│   │   │   ├── layouts/        # 布局组件
-│   │   │   ├── pages/          # 页面
-│   │   │   ├── router/         # 路由配置
-│   │   │   ├── stores/         # 状态管理
-│   │   │   ├── types/          # 类型定义
-│   │   │   ├── utils/          # 工具函数
-│   │   │   ├── App.tsx         # 根组件
-│   │   │   ├── main.tsx        # 入口文件
-│   │   │   └── index.css       # 全局样式
-│   │   ├── public/             # 公共资源
-│   │   ├── package.json
-│   │   ├── tsconfig.json
-│   │   ├── vite.config.ts
-│   │   └── README.md
-│   │
-│   ├── ecommerce/              # 电商系统 (后续)
-│   ├── oa/                     # OA 系统 (后续)
-│   └── cms/                    # CMS 系统 (后续)
+├── 📁 ecommerce-frontend/        # 【电商前端】(后续)
+│   ├── src/
+│   ├── package.json
+│   └── README.md
 │
-├── 📁 backend/                 # 【后端代码】
-│   ├── admin-api/              # 后台管理 API ⭐
-│   │   ├── src/
-│   │   │   ├── controllers/    # 控制器
-│   │   │   ├── middleware/     # 中间件
-│   │   │   ├── routes/         # 路由
-│   │   │   ├── services/       # 服务层
-│   │   │   ├── utils/          # 工具函数
-│   │   │   └── index.ts        # 入口文件
-│   │   ├── prisma/             # 数据库配置
-│   │   │   ├── schema.prisma   # 数据模型
-│   │   │   └── migrations/     # 数据库迁移
-│   │   ├── package.json
-│   │   ├── tsconfig.json
-│   │   └── README.md
-│   │
-│   └── ecommerce-api/          # 电商 API (后续)
+├── 📁 oa-frontend/               # 【OA 前端】(后续)
+│   ├── src/
+│   ├── package.json
+│   └── README.md
 │
-├── 📁 packages/                # 【共享包】
-│   ├── ui/                     # UI 组件库
-│   ├── utils/                  # 工具函数库
-│   └── types/                  # 类型定义库
+├── 📁 cms-frontend/              # 【CMS 前端】(后续)
+│   ├── src/
+│   ├── package.json
+│   └── README.md
 │
-├── 📁 docs/                    # 【项目文档】
-│   ├── 01-requirements/        # 需求文档
-│   │   ├── user-login.md       # 用户登录需求
-│   │   ├── oauth-config.md     # OAuth 配置
+├── 📁 docs/                      # 【项目文档】
+│   ├── 01-requirements/          # 需求文档
+│   │   ├── user-login.md         # 用户登录需求
+│   │   ├── oauth-config.md       # OAuth 配置
+│   │   ├── system-config.md      # 系统配置
+│   │   ├── base-tables.md        # 基础表设计
 │   │   └── ...
 │   │
-│   ├── 02-technical/           # 技术文档
-│   │   ├── api-specifications.md    # API 规范
-│   │   ├── database-design.md       # 数据库设计
-│   │   ├── admin-login-flow.md      # 登录流程
+│   ├── 02-technical/             # 技术文档
+│   │   ├── api-specifications.md # API 规范
+│   │   ├── database-design.md    # 数据库设计
+│   │   ├── admin-login-flow.md   # 登录流程
 │   │   └── ...
 │   │
-│   ├── 03-guides/              # 使用指南
-│   │   ├── CLAWTEAM_GUIDE.md   # ClawTeam 使用
-│   │   ├── GIT_WORKFLOW.md     # Git 工作流
+│   ├── 03-guides/                # 使用指南
+│   │   ├── CLAWTEAM_GUIDE.md     # ClawTeam 使用
+│   │   ├── GIT_WORKFLOW.md       # Git 工作流
 │   │   └── ...
 │   │
-│   └── 04-architecture/        # 架构设计
-│       └── ...
+│   ├── 04-architecture/          # 架构设计
+│   │   └── ...
+│   │
+│   └── PROJECT_STRUCTURE.md      # 目录结构规范
 │
-├── 📁 knowledge/               # 【知识库】
-│   ├── ai-basics/              # AI 基础
-│   ├── saas-architecture/      # SaaS 架构
-│   ├── mcp-protocol/           # MCP 协议
-│   ├── feishu-integration/     # 飞书集成
-│   ├── agent-development/      # Agent 开发
-│   ├── business-systems/       # 业务系统
-│   └── flowcharts/             # 流程图
-│
-├── 📁 skills/                  # 【AI 技能】
-│   ├── product-ceo/            # 产品 CEO 技能
-│   ├── architect/              # 架构师技能
-│   ├── developer/              # 开发者技能
-│   ├── qa-lead/                # QA 技能
-│   ├── release-engineer/       # 发布工程师技能
-│   ├── code-standards/         # 代码规范技能
-│   ├── security-review/        # 安全审查技能
-│   └── component-selector/     # 组件选型技能
-│
-├── 📁 memory/                  # 【记忆文件】
-│   ├── 2026-03-27.md
-│   ├── 2026-03-28.md
-│   └── heartbeat-state.json
-│
-├── 📁 scripts/                 # 【脚本工具】
-│   ├── setup.sh                # 初始化脚本
-│   ├── deploy.sh               # 部署脚本
-│   └── backup.sh               # 备份脚本
-│
-└── 📁 types/                   # 【全局类型】
-    ├── user.ts
-    ├── order.ts
-    └── index.ts
+├── 📄 README.md                  # 项目总说明
+└── 📄 .gitignore                 # Git 忽略文件
 ```
 
 ---
@@ -132,86 +104,48 @@
 
 | 目录 | 用途 | 说明 |
 |------|------|------|
-| `apps/` | 应用代码 | 前端应用（后台管理/电商/OA 等） |
-| `backend/` | 后端代码 | 后端 API 服务 |
-| `packages/` | 共享包 | 跨项目共享的库 |
+| `server/` | 统一后端服务 | 所有业务共用的后端 API 服务 |
+| `admin-frontend/` | 后台管理前端 | 后台管理系统前端 |
+| `ecommerce-frontend/` | 电商前端 | 电商系统前端 (后续) |
+| `oa-frontend/` | OA 前端 | OA 系统前端 (后续) |
+| `cms-frontend/` | CMS 前端 | CMS 系统前端 (后续) |
 | `docs/` | 项目文档 | 需求/技术/指南文档 |
-| `knowledge/` | 知识库 | 结构化知识沉淀 |
-| `skills/` | AI 技能 | AI Agent 技能定义 |
-| `memory/` | 记忆文件 | AI 会话记忆 |
-
-### 文档目录规范
-
-```
-docs/
-├── 01-requirements/    # 需求文档（带编号，便于排序）
-├── 02-technical/       # 技术文档
-├── 03-guides/          # 使用指南
-└── 04-architecture/    # 架构设计
-```
-
-**文档命名**：
-- 使用小写字母
-- 单词间用连字符（-）
-- 语义清晰
-
-**示例**：
-- ✅ `user-login.md`
-- ❌ `UserLogin.md`
-- ❌ `user_login.md`
 
 ---
 
-## 文件组织原则
+## 命名规范
 
-### 1. 按功能分类，而非文件类型
-
-```
-✅ 正确：
-apps/admin/src/pages/      # 所有页面
-apps/admin/src/components/ # 所有组件
-
-❌ 错误：
-apps/admin/pages/          # 分散
-apps/admin/components/
-apps/admin/react-pages/    # 按技术分
-apps/admin/vue-pages/
-```
-
-### 2. 保持扁平，避免过深嵌套
+### 目录命名
 
 ```
-✅ 正确（3 层）：
-apps/admin/src/pages/Login.tsx
+✅ 正确:
+• admin-frontend/     # 后台管理前端
+• ecommerce-frontend/ # 电商前端
+• server/             # 后端服务
 
-❌ 错误（6 层）：
-apps/admin/src/components/pages/login/LoginPage.tsx
+❌ 错误:
+• AdminFrontend/      # 驼峰命名
+• admin_frontend/     # 下划线命名
+• frontend-admin/     # 顺序不一致
 ```
 
-### 3. 命名一致
+### 文件命名
 
 ```
-✅ 正确：
-apps/admin/
-backend/admin-api/
+✅ 正确:
+• user-login.md       # 需求文档
+• api-specifications.md # 技术文档
+• Login.tsx           # React 组件
 
-❌ 错误：
-apps/Admin/                # 大小写不一致
-backend/AdminApi/
-```
-
-### 4. 及时清理
-
-```
-定期清理：
-• 临时文件（tmp/ temp/）
-• 无用文档
-• 过时的配置
+❌ 错误:
+• UserLogin.md        # 驼峰命名
+• api_specifications.md # 下划线命名
+• login.tsx           # 首字母小写 (组件应该大写)
 ```
 
 ---
 
-## 文档分类说明
+## 文档分类规范
 
 ### 01-requirements/ (需求文档)
 
@@ -220,6 +154,9 @@ backend/AdminApi/
 ```
 01-requirements/
 ├── user-login.md          # 用户登录需求
+├── user-login-v2.md       # v2 版本
+├── user-login-v2.1.md     # v2.1 版本
+├── user-login-v2.2.md     # v2.2 版本 (完整版)
 ├── oauth-config.md        # OAuth 配置需求
 ├── system-config.md       # 系统配置需求
 ├── base-tables.md         # 基础表设计
@@ -267,119 +204,166 @@ backend/AdminApi/
 
 ---
 
-## 代码目录规范
+## Git 规范
 
-### apps/admin/src/
+### 目录前缀
 
-```
-src/
-├── api/              # API 调用层
-│   ├── request.ts    # axios 实例配置
-│   ├── auth.ts       # 认证 API
-│   ├── user.ts       # 用户 API
-│   └── index.ts      # 统一导出
-│
-├── assets/           # 静态资源
-│   ├── images/
-│   ├── icons/
-│   └── fonts/
-│
-├── components/       # 业务组件
-│   ├── Layout/       # 布局组件
-│   ├── Header/       # 头部组件
-│   ├── Sidebar/      # 侧边栏
-│   └── ...
-│
-├── hooks/            # 自定义 Hooks
-│   ├── useAuth.ts
-│   ├── usePermission.ts
-│   └── ...
-│
-├── layouts/          # 布局组件
-│   ├── BasicLayout.tsx
-│   └── UserLayout.tsx
-│
-├── pages/            # 页面
-│   ├── Login/
-│   │   ├── index.tsx
-│   │   └── index.css
-│   ├── Dashboard/
-│   └── ...
-│
-├── router/           # 路由配置
-│   ├── index.tsx
-│   └── routes.ts
-│
-├── stores/           # 状态管理
-│   ├── authStore.ts
-│   ├── userStore.ts
-│   └── ...
-│
-├── types/            # 类型定义
-│   ├── api.ts
-│   ├── user.ts
-│   └── index.ts
-│
-├── utils/            # 工具函数
-│   ├── format.ts
-│   ├── validate.ts
-│   └── ...
-│
-├── App.tsx           # 根组件
-├── main.tsx          # 入口文件
-└── index.css         # 全局样式
+提交时使用目录前缀：
+
+```bash
+# 前端相关
+feat(admin-frontend): 实现登录功能
+fix(admin-frontend): 修复 Token 刷新问题
+
+# 后端相关
+feat(server): 实现用户管理 API
+fix(server): 修复数据库连接问题
+
+# 文档相关
+docs(readme): 更新项目说明
+docs(requirements): 更新登录需求
 ```
 
-### backend/admin-api/src/
+### 分支策略
 
 ```
-src/
-├── controllers/      # 控制器
-│   ├── auth.controller.ts
-│   ├── user.controller.ts
-│   └── ...
-│
-├── middleware/       # 中间件
-│   ├── auth.middleware.ts
-│   ├── error.middleware.ts
-│   └── ...
-│
-├── routes/           # 路由
-│   ├── auth.routes.ts
-│   ├── user.routes.ts
-│   └── ...
-│
-├── services/         # 服务层
-│   ├── auth.service.ts
-│   ├── user.service.ts
-│   └── ...
-│
-├── utils/            # 工具函数
-│   ├── logger.ts
-│   ├── encryption.ts
-│   └── ...
-│
-└── index.ts          # 入口文件
+main                # 生产环境
+develop            # 开发分支
+feature/login      # 登录功能
+feature/user-mgmt  # 用户管理功能
+fix/auth-bug       # 认证 Bug 修复
 ```
 
 ---
 
 ## 清理建议
 
-### 需要整理的内容
+### 定期清理
 
+```bash
+# 清理 node_modules
+find . -name "node_modules" -type d -exec rm -rf {} +
+
+# 清理构建输出
+find . -name "dist" -type d -exec rm -rf {} +
+find . -name "build" -type d -exec rm -rf {} +
+
+# 清理临时文件
+find . -name ".cache" -type d -exec rm -rf {} +
+find . -name "*.log" -type f -exec rm -f {} +
 ```
-当前问题：
-1. docs/ 目录下文档没有分类
-2. docs/notes/ 目录内容需要整理
-3. docs/saas-launch-log.md 应该移到 memory/
-4. 根目录文件过多
 
-整理计划：
-1. docs/ 创建编号子目录 (01-requirements/02-technical/...)
-2. 移动文档到对应目录
-3. 清理无用文件
-4. 更新文档引用路径
+### .gitignore
+
+```gitignore
+# 依赖
+node_modules/
+.pnpm-store/
+
+# 构建输出
+dist/
+build/
+.next/
+
+# 环境文件
+.env
+.env.local
+.env.production
+
+# 日志
+logs/
+*.log
+
+# 编辑器
+.idea/
+.vscode/
+*.swp
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# 临时文件
+.cache/
+tmp/
+```
+
+---
+
+## 项目启动流程
+
+### 第一次启动
+
+```bash
+# 1. 克隆项目
+git clone https://github.com/qmuyangren/saas-platform.git
+cd saas-platform
+
+# 2. 启动后台管理前端
+cd admin-frontend
+pnpm install
+pnpm dev
+
+# 3. 启动后端服务 (待创建)
+cd server
+pnpm install
+pnpm dev
+```
+
+### 开发流程
+
+```bash
+# 1. 拉取最新代码
+git pull origin main
+
+# 2. 创建功能分支
+git checkout -b feature/login
+
+# 3. 开发并提交
+git add .
+git commit -m "feat(admin-frontend): 实现登录功能"
+
+# 4. 推送分支
+git push origin feature/login
+
+# 5. 创建 PR
+# 在 GitHub 上创建 Pull Request
+```
+
+---
+
+## 常见问题
+
+### Q1: 为什么要用多前端 + 统一后端架构？
+
+**A**: 
+- 所有业务共用一套用户体系和权限系统
+- 数据集中管理，避免数据孤岛
+- 后端统一维护，降低运维成本
+- 前端独立开发部署，灵活高效
+
+### Q2: 为什么所有项目在一个 Git 仓库？
+
+**A**:
+- 统一管理，方便协调
+- 文档和代码在一起
+- 版本一致性好
+- 适合中小团队
+
+### Q3: 如何添加新的业务前端？
+
+**A**:
+```bash
+# 1. 创建目录
+mkdir ecommerce-frontend
+
+# 2. 初始化项目
+cd ecommerce-frontend
+pnpm create vite . --template react-ts
+
+# 3. 提交到 Git
+git add .
+git commit -m "feat(ecommerce-frontend): 初始化电商前端"
 ```
 
 ---

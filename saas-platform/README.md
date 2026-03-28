@@ -10,144 +10,119 @@
 
 ## 项目简介
 
-基于 Node.js + React 的模块化 SaaS 平台，采用 **多前端 + 统一后端** 架构：
+基于 NestJS + React 的模块化 SaaS 平台，采用 **多前端 + 统一后端** 架构：
 - 统一认证中心 (SSO)
 - 多租户架构
 - 多业务前端 (电商/OA/CMS/党建/校园等)
-- 统一后端服务
+- 统一后端服务 (NestJS)
 - AI 能力集成
 - MCP 工具提供
 
 ---
 
-## 项目结构
+## 目录结构
 
 ```
-/workspace/
-├── saas-platform/          # 主项目 (文档 + 协调)
-│   ├── docs/               # 项目文档
-│   └── knowledge/          # 知识库
+saas-platform/                    # 一个 Git 仓库 ⭐
+├── server/                       # 后端服务 (NestJS) ✅
+│   ├── src/
+│   │   ├── main.ts
+│   │   ├── app.module.ts
+│   │   ├── prisma/
+│   │   └── modules/
+│   ├── prisma/
+│   │   └── schema.prisma
+│   ├── package.json
+│   └── README.md
 │
-├── admin-frontend/         # 后台管理前端 (独立仓库) ⭐
+├── admin-frontend/               # 后台管理前端 ✅
 │   ├── src/
 │   ├── package.json
 │   └── README.md
 │
-├── server/                 # 统一后端服务 (独立仓库) ⭐
-│   ├── src/
-│   ├── prisma/
-│   └── package.json
+├── ecommerce-frontend/           # 电商前端 (后续)
+├── oa-frontend/                  # OA 前端 (后续)
+├── cms-frontend/                 # CMS 前端 (后续)
 │
-├── ecommerce-frontend/     # 电商前端 (独立仓库，后续)
-├── oa-frontend/            # OA 前端 (独立仓库，后续)
-└── cms-frontend/           # CMS 前端 (独立仓库，后续)
-```
-
-**每个项目都是独立的 Git 仓库**：
-- ✅ 独立版本控制
-- ✅ 独立依赖管理
-- ✅ 独立 CI/CD
-- ✅ 独立部署
-
----
-
-## 架构说明
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                    多前端 + 统一后端架构                        │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  前端层 (独立仓库):                                             │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐       │
-│  │  admin   │  │ecommerce │  │    oa    │  │   cms    │  ...  │
-│  │ frontend │  │ frontend │  │ frontend │  │ frontend │       │
-│  └────┬─────┘  └────┬─────┘  └────┬─────┘  └────┬─────┘       │
-│       └─────────────┴─────────────┴─────────────┘               │
-│                           │                                     │
-│                           │ API 调用                             │
-│                           ↓                                     │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │              server/ (统一后端服务)                       │   │
-│  │  ┌──────────────────────────────────────────────────┐   │   │
-│  │  │  • 认证授权 (登录/权限/Token)                     │   │   │
-│  │  │  • 用户管理                                      │   │   │
-│  │  │  • 角色权限                                      │   │   │
-│  │  │  • 系统配置                                      │   │   │
-│  │  │  • 字典管理                                      │   │   │
-│  │  │  • 日志管理                                      │   │   │
-│  │  │  • 电商 API (商品/订单/购物车)                   │   │   │
-│  │  │  • OA API (考勤/请假/会议)                       │   │   │
-│  │  │  • CMS API (文章/栏目/评论)                      │   │   │
-│  │  └──────────────────────────────────────────────────┘   │   │
-│  └─────────────────────────────────────────────────────────┘   │
-│                           │                                     │
-│                           ↓                                     │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │              MySQL + Redis (数据库 + 缓存)               │   │
-│  └─────────────────────────────────────────────────────────┘   │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+├── docs/                         # 项目文档
+│   ├── 01-requirements/
+│   ├── 02-technical/
+│   ├── 03-guides/
+│   └── 04-architecture/
+│
+└── README.md                     # 项目说明
 ```
 
 ---
 
-## 仓库列表
+## 技术栈
 
-### 主项目
+### 前端
+- React 18 + TypeScript 5
+- Vite 5
+- Ant Design 6
+- Zustand
+- React Router 7
 
-| 仓库 | 说明 | 状态 |
-|------|------|------|
-| [saas-platform](https://github.com/qmuyangren/saas-platform) | 主项目 (文档 + 协调) | ✅ 已创建 |
-
-### 前端项目
-
-| 仓库 | 说明 | 状态 |
-|------|------|------|
-| admin-frontend | 后台管理前端 | ✅ 已创建 |
-| ecommerce-frontend | 电商前端 | ⏳ 计划中 |
-| oa-frontend | OA 前端 | ⏳ 计划中 |
-| cms-frontend | CMS 前端 | ⏳ 计划中 |
-
-### 后端服务
-
-| 仓库 | 说明 | 状态 |
-|------|------|------|
-| server | 统一后端服务 | ⏳ 待创建 |
+### 后端
+- NestJS 11
+- TypeScript 5
+- Prisma 5
+- MySQL 5.7/8.0
+- Passport + JWT
+- Swagger
 
 ---
 
 ## 快速开始
 
-### admin-frontend (后台管理前端)
+### 后端服务
 
 ```bash
-# 进入项目目录
-cd admin-frontend
-
-# 安装依赖
-pnpm install
-
-# 启动开发服务器
-pnpm dev
-
-# 访问 http://localhost:5173
-```
-
-### server (统一后端服务)
-
-```bash
-# 进入项目目录
 cd server
-
-# 安装依赖
 pnpm install
+cp .env.example .env
+pnpm prisma:generate
+pnpm run start:dev
 
-# 启动开发服务器
-pnpm dev
-
-# 访问 http://localhost:3000
+# http://localhost:3000
+# http://localhost:3000/api/docs
 ```
+
+### 后台管理前端
+
+```bash
+cd admin-frontend
+pnpm install
+pnpm run dev
+
+# http://localhost:5173
+```
+
+---
+
+## 项目状态
+
+| 项目 | 状态 | 说明 |
+|------|------|------|
+| server | ✅ 完成 | NestJS 后端服务 |
+| admin-frontend | ✅ 完成 | 后台管理前端 |
+| ecommerce-frontend | ⏳ 计划中 | 电商前端 |
+| oa-frontend | ⏳ 计划中 | OA 前端 |
+| cms-frontend | ⏳ 计划中 | CMS 前端 |
+
+---
+
+## API 文档
+
+- **Swagger**: http://localhost:3000/api/docs
+- **健康检查**: GET /api/v1/health
+- **登录**: POST /api/v1/auth/login
+- **用户管理**: /api/v1/users
+- **角色管理**: /api/v1/roles
+- **字典管理**: /api/v1/dicts
+- **日志管理**: /api/v1/logs
+- **公告管理**: /api/v1/announcements
 
 ---
 
@@ -157,10 +132,10 @@ pnpm dev
 - [x] 需求分析
 - [x] 数据库设计
 - [x] API 规范设计
-- [x] 目录结构整理
-- [x] 前端项目创建 (admin-frontend)
-- [ ] 后端 API 创建 (server)
-- [ ] 后端开发
+- [x] NestJS 项目创建
+- [x] 认证模块实现
+- [x] 用户模块实现
+- [x] 角色/字典/日志/公告模块框架
 - [ ] 前后端联调
 - [ ] 测试验证
 
@@ -182,21 +157,23 @@ pnpm dev
 
 ---
 
-## 技术栈
+## Git 规范
 
-### 前端
-- React 18 + TypeScript 5
-- Vite 5
-- Ant Design 6
-- Zustand (状态管理)
-- React Router 7
+### 分支策略
+- `main` - 生产环境
+- `develop` - 开发分支
+- `feature/*` - 功能分支
+- `fix/*` - 修复分支
+- `release/*` - 发布分支
 
-### 后端
-- Fastify 4 / NestJS 10
-- Node.js 20 + TypeScript 5
-- Prisma 5 (ORM)
-- MySQL 8.0
-- Redis 7
+### 提交规范
+```bash
+feat(server): 实现 JWT 认证
+fix(admin): 修复登录跳转问题
+docs(readme): 更新项目说明
+refactor(server): 重构用户服务
+test(auth): 添加认证测试
+```
 
 ---
 

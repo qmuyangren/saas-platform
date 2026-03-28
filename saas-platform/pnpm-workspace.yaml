@@ -1,7 +1,0 @@
-packages:
-  - 'admin/*'
-  - 'ecommerce/*'
-  - 'oa/*'
-  - 'cms/*'
-  - 'server'
-  - 'shared/*'
