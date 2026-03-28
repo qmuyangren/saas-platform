@@ -1,7 +1,7 @@
 # USER.md - About Your Human
 
-- **Name:** Nick (朱振华)
-- **What to call them:** Nick
+- **Name:** 小虾米 (朱振华)
+- **What to call them:** 小虾米
 - **Pronouns:** he/him
 - **Timezone:** Asia/Shanghai (UTC+8)
 - **Notes:** AI beginner, eager to learn, detail-oriented, loves flowcharts
