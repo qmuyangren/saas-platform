@@ -11,3 +11,8 @@ export * from './Drawer';
 export * from './Descriptions';
 export * from './Card';
 export * from './Dropdown';
+export * from './Tree';
+export * from './Editor';
+export * from './Chart';
+export * from './CountDown';
+export * from './Upload';
