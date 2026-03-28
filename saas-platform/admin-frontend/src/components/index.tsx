@@ -16,3 +16,5 @@ export * from './Editor';
 export * from './Chart';
 export * from './CountDown';
 export * from './Upload';
+export * from './Authority';
+export * from './CountTo';
