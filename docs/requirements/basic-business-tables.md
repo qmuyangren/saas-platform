@@ -1,14 +1,149 @@
 # 基础业务表设计
 
-**版本**: v1.0  
-**更新时间**: 2026-03-28 15:54  
-**用途**: 站内信/系统字典/行政区划
+**版本**: v1.1  
+**更新时间**: 2026-03-28 15:55  
+**用途**: 站内信/系统字典/行政区划/通知公告
 
 ---
 
-## 一、站内信相关表
+## 一、通知公告相关表 ⭐
 
-### 1.1 MessageTemplate 表 (消息模板)
+### 1.1 Announcement 表 (通知公告表)
+
+**用途**: 系统公告/通知管理
+
+```prisma
+model Announcement {
+  id          String   @id @default(uuid()) @db.VarChar(36)
+  
+  // 公告信息
+  title       String
+  content     String   @db.Text  // 支持 Markdown/HTML
+  summary     String?  // 摘要 (自动生成或手动填写)
+  
+  // 公告类型
+  type        String   @default("notice")  // notice/announcement/activity/system
+  category    String?  // 分类 (如：系统维护/活动通知/政策公告)
+  
+  // 发布范围
+  scope       String   @default("all")  // all/public/internal/specific
+  targetIds   String?  @db.Text  // 指定用户/角色 ID 列表 (JSON 数组)
+  
+  // 优先级
+  priority    String   @default("normal")  // low/normal/high/urgent
+  
+  // 状态
+  status      String   @default("draft")  // draft/published/archived
+  
+  // 发布控制
+  publishedBy String?  @db.VarChar(36)  // 发布人 ID
+  publishedAt DateTime?
+  
+  // 时间控制
+  startTime   DateTime?  // 开始显示时间
+  endTime     DateTime?  // 结束显示时间
+  
+  // 置顶
+  isTop       Boolean  @default(false)
+  topUntil    DateTime?  // 置顶截止时间
+  
+  // 统计
+  viewCount   Int      @default(0)
+  
+  // 附件
+  attachments Json?    // [{name, url, size, type}]
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // 关联
+  publisher   AdminUser? @relation(fields: [publishedBy], references: [id])
+  
+  @@index([type])
+  @@index([status])
+  @@index([priority])
+  @@index([publishedAt])
+  @@index([isTop])
+}
+```
+
+**示例数据**:
+
+```json
+// 系统维护通知
+{
+  "id": "announce-uuid-1",
+  "title": "系统维护通知",
+  "content": "尊敬的用户：\n\n系统将于 2026-03-29 凌晨 2:00-4:00 进行维护...",
+  "summary": "系统将于 3 月 29 日凌晨维护 2 小时",
+  "type": "system",
+  "category": "系统维护",
+  "scope": "all",
+  "priority": "high",
+  "status": "published",
+  "publishedBy": "admin-uuid-1",
+  "publishedAt": "2026-03-28T10:00:00Z",
+  "startTime": "2026-03-28T10:00:00Z",
+  "endTime": "2026-03-29T06:00:00Z",
+  "isTop": true,
+  "topUntil": "2026-03-29T06:00:00Z",
+  "viewCount": 1234
+}
+
+// 活动通知
+{
+  "id": "announce-uuid-2",
+  "title": "新用户注册送优惠券活动",
+  "content": "即日起至 3 月 31 日，新用户注册即送 100 元优惠券...",
+  "type": "activity",
+  "category": "营销活动",
+  "scope": "public",
+  "priority": "normal",
+  "status": "published",
+  "isTop": false,
+  "attachments": [
+    {"name": "活动海报.jpg", "url": "/uploads/activity-poster.jpg", "size": 102400}
+  ]
+}
+```
+
+---
+
+### 1.2 AnnouncementRead 表 (公告阅读记录)
+
+**用途**: 记录用户公告阅读状态
+
+```prisma
+model AnnouncementRead {
+  id            String   @id @default(uuid()) @db.VarChar(36)
+  announcementId String  @db.VarChar(36)
+  userId        String   @db.VarChar(36)
+  
+  // 阅读状态
+  isRead        Boolean  @default(true)
+  readAt        DateTime @default(now())
+  
+  // 阅读设备
+  device        String?  // mobile/desktop
+  ip            String?
+  
+  createdAt     DateTime @default(now())
+  
+  // 关联
+  announcement  Announcement @relation(fields: [announcementId], references: [id], onDelete: Cascade)
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([announcementId, userId])
+  @@index([userId])
+  @@index([announcementId])
+}
+```
+
+---
+
+## 二、站内信相关表
+
+### 2.1 MessageTemplate 表 (消息模板)
 
 **用途**: 系统消息模板管理
 
