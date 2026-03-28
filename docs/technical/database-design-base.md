@@ -1,7 +1,7 @@
 # 基础表设计规范
 
-**版本**: v1.0  
-**更新时间**: 2026-03-28 16:27  
+**版本**: v1.1  
+**更新时间**: 2026-03-28 16:36  
 **用途**: 统一表结构规范
 
 ---
@@ -15,47 +15,71 @@
 │                    表名前缀规则                                 │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│  base_*        - 基础业务表 (用户/角色/权限等)                  │
-│  auth_*        - 认证相关表 (OAuth/Token 等)                     │
-│  sys_*         - 系统配置表 (配置/字典/日志等)                  │
-│  biz_*         - 业务数据表 (订单/商品等)                        │
-│  file_*        - 文件存储表                                     │
-│  msg_*         - 消息通知表                                     │
-│  stat_*        - 统计表                                         │
+│  base_*        - 基础表 (所有业务共享)                          │
+│  ┌──────────────────────────────────────────────────────────┐  │
+│  │  • base_user           - 用户表                           │  │
+│  │  • base_admin_user     - 管理员表                         │  │
+│  │  • base_role           - 角色表                           │  │
+│  │  • base_menu           - 菜单表                           │  │
+│  │  • base_dict_type      - 字典类型表                       │  │
+│  │  • base_dict_item      - 字典项表                         │  │
+│  │  • base_file           - 文件表                           │  │
+│  │  • base_announcement   - 公告表                           │  │
+│  └──────────────────────────────────────────────────────────┘  │
 │                                                                 │
-│  示例：                                                         │
-│  • base_user           - 用户表                                 │
-│  • base_role           - 角色表                                 │
-│  • auth_oauth_client   - OAuth 客户端表                          │
-│  • sys_config          - 系统配置表                             │
-│  • sys_dict_type       - 字典类型表                             │
-│  • biz_order           - 订单表                                 │
-│  • file_storage        - 文件存储表                             │
-│  • msg_announcement    - 公告表                                 │
-│  • stat_user_daily     - 用户日统计表                           │
+│  {业务名}_*    - 业务表 (特定业务使用)                          │
+│  ┌──────────────────────────────────────────────────────────┐  │
+│  │  电商业务：                                               │  │
+│  │  • ecommerce_order       - 订单表                         │  │
+│  │  • ecommerce_product     - 商品表                         │  │
+│  │  • ecommerce_cart        - 购物车表                       │  │
+│  │                                                          │  │
+│  │  OA 业务：                                                 │  │
+│  │  • oa_attendance         - 考勤表                         │  │
+│  │  • oa_leave              - 请假表                         │  │
+│  │  • oa_meeting            - 会议表                         │  │
+│  │                                                          │  │
+│  │  CMS 业务：                                                │  │
+│  │  • cms_article           - 文章表                         │  │
+│  │  • cms_category          - 栏目表                         │  │
+│  │                                                          │  │
+│  │  党建业务：                                               │  │
+│  │  • party_member          - 党员表                         │  │
+│  │  • party_organization    - 党组织表                       │  │
+│  │                                                          │  │
+│  │  校园业务：                                               │  │
+│  │  • campus_student        - 学生表                         │  │
+│  │  • campus_teacher        - 教师表                         │  │
+│  │  • campus_course         - 课程表                         │  │
+│  └──────────────────────────────────────────────────────────┘  │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-### 1.2 表名命名规则
+### 1.2 命名原则
 
 ```
-• 使用小写字母
-• 单词间用下划线分隔
-• 使用复数形式 (可选，统一即可)
-• 语义清晰，避免缩写
-
-✅ 正确：
-• base_user
-• base_admin_user
-• sys_dict_type
-• biz_order_item
-
-❌ 错误：
-• User (大写)
-• t_user (无意义前缀)
-• usr (缩写)
-• orders (时而复数时而单数)
+┌─────────────────────────────────────────────────────────────────┐
+│                    命名原则                                     │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ✅ base_* (基础表)                                             │
+│  • 所有业务系统共享的基础数据                                   │
+│  • 统一加 base_前缀                                             │
+│  • 如：用户/角色/权限/字典/文件/公告等                          │
+│                                                                 │
+│  ✅ {业务名}_* (业务表)                                         │
+│  • 特定业务系统的数据                                           │
+│  • 业务名 + 表名，不加 base_前缀                                │
+│  • 如：订单/商品/文章/考勤等                                    │
+│                                                                 │
+│  ✅ 命名规则：                                                  │
+│  • 使用小写字母                                                 │
+│  • 单词间用下划线分隔                                           │
+│  • 使用单数形式 (统一)                                          │
+│  • 语义清晰，避免缩写                                           │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -65,7 +89,7 @@
 ### 2.1 所有表必须包含的字段
 
 ```prisma
-// 所有基础表的通用字段 mixin
+// 所有基础表的通用字段
 model BaseFields {
   // 主键
   id          String   @id @default(uuid()) @db.VarChar(36)
@@ -114,93 +138,9 @@ model BaseFields {
 
 ---
 
-## 三、软删除规范
+## 三、基础表设计
 
-### 3.1 软删除实现
-
-```prisma
-// 软删除 mixin
-model SoftDelete {
-  deletedBy   String?  @db.VarChar(36)
-  deletedAt   DateTime? @db.Timestamp(6)
-  isDeleted   Boolean  @default(false)
-  
-  @@index([isDeleted])
-  @@index([deletedAt])
-}
-
-// 使用示例
-model BaseUser {
-  // 通用字段
-  id          String   @id @default(uuid()) @db.VarChar(36)
-  createdBy   String?  @db.VarChar(36)
-  createdAt   DateTime @default(now()) @db.Timestamp(6)
-  updatedBy   String?  @db.VarChar(36)
-  updatedAt   DateTime @updatedAt @db.Timestamp(6)
-  
-  // 软删除
-  deletedBy   String?  @db.VarChar(36)
-  deletedAt   DateTime? @db.Timestamp(6)
-  isDeleted   Boolean  @default(false)
-  
-  // 业务字段
-  username    String   @unique
-  email       String   @unique
-  
-  @@index([isDeleted])
-}
-```
-
-### 3.2 软删除查询
-
-```typescript
-// Prisma 查询中间件 (自动过滤已删除数据)
-prisma.$use(async (params, next) => {
-  // 查询前添加过滤条件
-  if (params.model === 'BaseUser') {
-    if (params.action === 'findMany' || params.action === 'findFirst') {
-      if (!params.args.where) {
-        params.args.where = {};
-      }
-      params.args.where.isDeleted = false;
-    }
-  }
-  return next(params);
-});
-
-// 软删除操作
-await prisma.baseUser.update({
-  where: { id: userId },
-  data: {
-    isDeleted: true,
-    deletedAt: new Date(),
-    deletedBy: currentUserId
-  }
-});
-
-// 查询已删除的数据
-await prisma.baseUser.findMany({
-  where: {
-    isDeleted: true
-  }
-});
-
-// 恢复已删除的数据
-await prisma.baseUser.update({
-  where: { id: userId },
-  data: {
-    isDeleted: false,
-    deletedAt: null,
-    deletedBy: null
-  }
-});
-```
-
----
-
-## 四、基础表设计
-
-### 4.1 用户表 (base_user)
+### 3.1 用户表 (base_user)
 
 ```prisma
 model BaseUser {
@@ -219,17 +159,17 @@ model BaseUser {
   // ========== 业务字段 ==========
   // 账号信息
   username    String   @unique @db.VarChar(50)
-  password    String   @db.VarChar(255)  // bcrypt 加密
+  password    String   @db.VarChar(255)
   email       String   @unique @db.VarChar(100)
   phone       String?  @unique @db.VarChar(20)
   
   // 基本信息
   avatar      String?  @db.VarChar(500)
   nickname    String?  @db.VarChar(100)
-  gender      String?  @db.VarChar(10)  // MALE/FEMALE/UNKNOWN
+  gender      String?  @db.VarChar(10)
   
   // 状态
-  status      String   @default("ACTIVE") @db.VarChar(20)  // ACTIVE/DISABLED/LOCKED
+  status      String   @default("ACTIVE") @db.VarChar(20)
   isEmailVerified Boolean @default(false)
   isPhoneVerified Boolean @default(false)
   
@@ -252,7 +192,7 @@ model BaseUser {
 }
 ```
 
-### 4.2 管理员表 (base_admin_user)
+### 3.2 管理员表 (base_admin_user)
 
 ```prisma
 model BaseAdminUser {
@@ -280,11 +220,11 @@ model BaseAdminUser {
   nickname    String?  @db.VarChar(100)
   
   // 角色和权限
-  role        String   @default("OPERATOR") @db.VarChar(20)  // SUPER_ADMIN/ADMIN/OPERATOR/AUDITOR
-  permissions String?  @db.Text  // JSON 数组
+  role        String   @default("OPERATOR") @db.VarChar(20)
+  permissions String?  @db.Text
   
   // 状态
-  status      String   @default("ACTIVE") @db.VarChar(20)  // ACTIVE/DISABLED/LOCKED
+  status      String   @default("ACTIVE") @db.VarChar(20)
   
   // 安全
   failedAttempts Int    @default(0)
@@ -292,7 +232,7 @@ model BaseAdminUser {
   mustChangePassword Boolean @default(true)
   lastLoginAt   DateTime? @db.Timestamp(6)
   lastLoginIp   String?  @db.VarChar(50)
-  allowedIpRanges String? @db.Text  // JSON 数组
+  allowedIpRanges String? @db.Text
   
   // 双因素认证
   twoFactorEnabled Boolean @default(false)
@@ -306,7 +246,7 @@ model BaseAdminUser {
 }
 ```
 
-### 4.3 角色表 (base_role)
+### 3.3 角色表 (base_role)
 
 ```prisma
 model BaseRole {
@@ -326,13 +266,9 @@ model BaseRole {
   name        String   @db.VarChar(100)
   code        String   @unique @db.VarChar(50)
   description String?  @db.VarChar(500)
-  
-  // 权限
-  permissions String?  @db.Text  // JSON 数组
-  
-  // 状态
+  permissions String?  @db.Text
   enabled     Boolean  @default(true)
-  isSystem    Boolean  @default(false)  // 系统内置角色
+  isSystem    Boolean  @default(false)
   
   // ========== 关联 ==========
   users       BaseUserRole[]
@@ -344,85 +280,10 @@ model BaseRole {
 }
 ```
 
-### 4.4 用户角色关联表 (base_user_role)
+### 3.4 字典类型表 (base_dict_type)
 
 ```prisma
-model BaseUserRole {
-  // ========== 通用字段 ==========
-  id          String   @id @default(uuid()) @db.VarChar(36)
-  createdBy   String?  @db.VarChar(36)
-  createdAt   DateTime @default(now()) @db.Timestamp(6)
-  updatedBy   String?  @db.VarChar(36)
-  updatedAt   DateTime @updatedAt @db.Timestamp(6)
-  deletedBy   String?  @db.VarChar(36)
-  deletedAt   DateTime? @db.Timestamp(6)
-  isDeleted   Boolean  @default(false)
-  sortOrder   Int      @default(0)
-  remark      String?  @db.VarChar(500)
-  
-  // ========== 业务字段 ==========
-  userId      String   @db.VarChar(36)
-  roleId      String   @db.VarChar(36)
-  
-  // ========== 关联 ==========
-  user        BaseUser @relation(fields: [userId], references: [id], onDelete: Cascade)
-  role        BaseRole @relation(fields: [roleId], references: [id], onDelete: Cascade)
-  
-  // ========== 索引 ==========
-  @@unique([userId, roleId])
-  @@index([userId])
-  @@index([roleId])
-  @@index([isDeleted])
-}
-```
-
----
-
-## 五、系统表设计
-
-### 5.1 系统配置表 (sys_config)
-
-```prisma
-model SysConfig {
-  // ========== 通用字段 ==========
-  id          String   @id @default(uuid()) @db.VarChar(36)
-  createdBy   String?  @db.VarChar(36)
-  createdAt   DateTime @default(now()) @db.Timestamp(6)
-  updatedBy   String?  @db.VarChar(36)
-  updatedAt   DateTime @updatedAt @db.Timestamp(6)
-  deletedBy   String?  @db.VarChar(36)
-  deletedAt   DateTime? @db.Timestamp(6)
-  isDeleted   Boolean  @default(false)
-  sortOrder   Int      @default(0)
-  remark      String?  @db.VarChar(500)
-  
-  // ========== 业务字段 ==========
-  configKey   String   @unique @db.VarChar(100)
-  configValue String   @db.Text
-  configType  String   @default("string") @db.VarChar(20)  // string/number/boolean/json
-  
-  // 分组
-  group       String?  @db.VarChar(50)
-  
-  // 描述
-  name        String?  @db.VarChar(100)
-  description String?  @db.VarChar(500)
-  
-  // 状态
-  enabled     Boolean  @default(true)
-  
-  // ========== 索引 ==========
-  @@index([configKey])
-  @@index([group])
-  @@index([enabled])
-  @@index([isDeleted])
-}
-```
-
-### 5.2 字典类型表 (sys_dict_type)
-
-```prisma
-model SysDictType {
+model BaseDictType {
   // ========== 通用字段 ==========
   id          String   @id @default(uuid()) @db.VarChar(36)
   createdBy   String?  @db.VarChar(36)
@@ -439,13 +300,11 @@ model SysDictType {
   name        String   @db.VarChar(100)
   code        String   @unique @db.VarChar(50)
   description String?  @db.VarChar(500)
-  
-  // 状态
   enabled     Boolean  @default(true)
   isSystem    Boolean  @default(false)
   
   // ========== 关联 ==========
-  items       SysDictItem[]
+  items       BaseDictItem[]
   
   // ========== 索引 ==========
   @@index([code])
@@ -454,10 +313,10 @@ model SysDictType {
 }
 ```
 
-### 5.3 字典项表 (sys_dict_item)
+### 3.5 字典项表 (base_dict_item)
 
 ```prisma
-model SysDictItem {
+model BaseDictItem {
   // ========== 通用字段 ==========
   id          String   @id @default(uuid()) @db.VarChar(36)
   createdBy   String?  @db.VarChar(36)
@@ -475,19 +334,13 @@ model SysDictItem {
   label       String   @db.VarChar(100)
   value       String   @db.VarChar(100)
   code        String?  @db.VarChar(50)
-  
-  // 样式
   color       String?  @db.VarChar(20)
   icon        String?  @db.VarChar(100)
-  
-  // 状态
   enabled     Boolean  @default(true)
-  
-  // 扩展
   extra       Json?
   
   // ========== 关联 ==========
-  type        SysDictType @relation(fields: [typeId], references: [id], onDelete: Cascade)
+  type        BaseDictType @relation(fields: [typeId], references: [id], onDelete: Cascade)
   
   // ========== 索引 ==========
   @@index([typeId])
@@ -497,14 +350,10 @@ model SysDictItem {
 }
 ```
 
----
-
-## 六、IP 安全表设计
-
-### 6.1 IP 黑名单表 (sys_ip_blacklist)
+### 3.6 公告表 (base_announcement)
 
 ```prisma
-model SysIpBlacklist {
+model BaseAnnouncement {
   // ========== 通用字段 ==========
   id          String   @id @default(uuid()) @db.VarChar(36)
   createdBy   String?  @db.VarChar(36)
@@ -518,55 +367,42 @@ model SysIpBlacklist {
   remark      String?  @db.VarChar(500)
   
   // ========== 业务字段 ==========
-  ip          String?  @unique @db.VarChar(50)
-  ipRange     String?  @db.VarChar(50)
-  
-  // 原因
-  reason      String   @db.VarChar(500)
-  evidence    String?  @db.Text  // JSON
-  
-  // 级别
-  level       String   @default("medium") @db.VarChar(20)  // low/medium/high/critical
-  
-  // 状态
-  enabled     Boolean  @default(true)
-  
-  // 过期
-  expiresAt   DateTime? @db.Timestamp(6)
-  
-  // 统计
-  hitCount    Int      @default(0)
-  lastHitAt   DateTime? @db.Timestamp(6)
+  title       String   @db.VarChar(200)
+  content     String   @db.Text
+  summary     String?  @db.VarChar(500)
+  type        String   @default("notice") @db.VarChar(20)
+  category    String?  @db.VarChar(50)
+  scope       String   @default("all") @db.VarChar(20)
+  priority    String   @default("normal") @db.VarChar(20)
+  status      String   @default("draft") @db.VarChar(20)
+  publishedBy String?  @db.VarChar(36)
+  publishedAt DateTime? @db.Timestamp(6)
+  startTime   DateTime? @db.Timestamp(6)
+  endTime     DateTime? @db.Timestamp(6)
+  isTop       Boolean  @default(false)
+  topUntil    DateTime? @db.Timestamp(6)
+  viewCount   Int      @default(0)
+  attachments Json?
   
   // ========== 索引 ==========
-  @@index([ip])
-  @@index([ipRange])
-  @@index([enabled])
-  @@index([level])
+  @@index([type])
+  @@index([status])
+  @@index([priority])
+  @@index([publishedAt])
+  @@index([isTop])
   @@index([isDeleted])
 }
 ```
 
 ---
 
-## 七、Prisma Schema 示例
+## 四、业务表示例
+
+### 4.1 电商订单表 (ecommerce_order)
 
 ```prisma
-generator client {
-  provider = "prisma-client-js"
-}
-
-datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
-}
-
-// ========== 通用字段 Mixin ==========
-// 注意：Prisma 不支持真正的 mixin，需要手动复制到每个 model
-
-// ========== 基础表 ==========
-model BaseUser {
-  // 通用字段
+model EcommerceOrder {
+  // ========== 通用字段 ==========
   id          String   @id @default(uuid()) @db.VarChar(36)
   createdBy   String?  @db.VarChar(36)
   createdAt   DateTime @default(now()) @db.Timestamp(6)
@@ -578,67 +414,59 @@ model BaseUser {
   sortOrder   Int      @default(0)
   remark      String?  @db.VarChar(500)
   
-  // 业务字段
-  username    String   @unique @db.VarChar(50)
-  email       String   @unique @db.VarChar(100)
-  phone       String?  @unique @db.VarChar(20)
-  password    String   @db.VarChar(255)
-  status      String   @default("ACTIVE") @db.VarChar(20)
+  // ========== 业务字段 ==========
+  orderNo     String   @unique @db.VarChar(50)
+  userId      String   @db.VarChar(36)
+  status      String   @default("PENDING") @db.VarChar(20)
+  totalAmount Decimal  @db.Decimal(10, 2)
+  payAmount   Decimal  @db.Decimal(10, 2)
+  payTime     DateTime? @db.Timestamp(6)
   
+  // ========== 索引 ==========
+  @@index([orderNo])
+  @@index([userId])
+  @@index([status])
   @@index([isDeleted])
 }
+```
 
-// ... 其他表类似结构
+### 4.2 OA 考勤表 (oa_attendance)
+
+```prisma
+model OaAttendance {
+  // ========== 通用字段 ==========
+  id          String   @id @default(uuid()) @db.VarChar(36)
+  createdBy   String?  @db.VarChar(36)
+  createdAt   DateTime @default(now()) @db.Timestamp(6)
+  updatedBy   String?  @db.VarChar(36)
+  updatedAt   DateTime @updatedAt @db.Timestamp(6)
+  deletedBy   String?  @db.VarChar(36)
+  deletedAt   DateTime? @db.Timestamp(6)
+  isDeleted   Boolean  @default(false)
+  sortOrder   Int      @default(0)
+  remark      String?  @db.VarChar(500)
+  
+  // ========== 业务字段 ==========
+  userId      String   @db.VarChar(36)
+  date        DateTime @db.Date
+  checkInTime DateTime? @db.Timestamp(6)
+  checkOutTime DateTime? @db.Timestamp(6)
+  status      String   @default("NORMAL") @db.VarChar(20)
+  
+  // ========== 索引 ==========
+  @@index([userId])
+  @@index([date])
+  @@index([status])
+  @@index([isDeleted])
+}
 ```
 
 ---
 
-## 八、使用示例
-
-### 8.1 创建记录
+## 五、软删除规范
 
 ```typescript
-// 创建用户
-const user = await prisma.baseUser.create({
-  data: {
-    username: 'admin',
-    email: 'admin@example.com',
-    password: hashedPassword,
-    createdBy: currentUserId,
-    updatedBy: currentUserId
-  }
-});
-
-// 创建角色
-const role = await prisma.baseRole.create({
-  data: {
-    name: '管理员',
-    code: 'ADMIN',
-    createdBy: currentUserId,
-    updatedBy: currentUserId,
-    sortOrder: 1
-  }
-});
-```
-
-### 8.2 更新记录
-
-```typescript
-// 更新用户
-await prisma.baseUser.update({
-  where: { id: userId },
-  data: {
-    email: 'new@example.com',
-    updatedBy: currentUserId
-    // updatedAt 会自动更新
-  }
-});
-```
-
-### 8.3 软删除
-
-```typescript
-// 软删除用户
+// 软删除操作
 await prisma.baseUser.update({
   where: { id: userId },
   data: {
@@ -650,13 +478,9 @@ await prisma.baseUser.update({
 
 // 查询自动过滤已删除
 const users = await prisma.baseUser.findMany();
-// 自动添加 where: { isDeleted: false }
-```
+// 自动添加 WHERE isDeleted = false
 
-### 8.4 恢复删除
-
-```typescript
-// 恢复用户
+// 恢复已删除的数据
 await prisma.baseUser.update({
   where: { id: userId },
   data: {
@@ -669,5 +493,55 @@ await prisma.baseUser.update({
 
 ---
 
+## 六、表命名完整列表
+
+### 基础表 (base_*)
+
+```
+base_user              - 用户表
+base_admin_user        - 管理员表
+base_role              - 角色表
+base_menu              - 菜单表
+base_dict_type         - 字典类型表
+base_dict_item         - 字典项表
+base_file              - 文件表
+base_announcement      - 公告表
+base_notification      - 通知表
+base_attachment        - 附件表
+```
+
+### 电商业务表 (ecommerce_*)
+
+```
+ecommerce_order        - 订单表
+ecommerce_order_item   - 订单商品表
+ecommerce_product      - 商品表
+ecommerce_category     - 分类表
+ecommerce_cart         - 购物车表
+ecommerce_sku          - SKU 表
+```
+
+### OA 业务表 (oa_*)
+
+```
+oa_attendance          - 考勤表
+oa_leave               - 请假表
+oa_meeting             - 会议表
+oa_task                - 任务表
+oa_department          - 部门表
+oa_employee            - 员工表
+```
+
+### CMS 业务表 (cms_*)
+
+```
+cms_article            - 文章表
+cms_category           - 栏目表
+cms_tag                - 标签表
+cms_comment            - 评论表
+```
+
+---
+
 **文档维护**: 小虾米  
-**最后更新**: 2026-03-28 16:27
+**最后更新**: 2026-03-28 16:36
