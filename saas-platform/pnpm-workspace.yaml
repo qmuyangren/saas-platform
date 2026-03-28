@@ -3,4 +3,5 @@ packages:
   - 'ecommerce/*'
   - 'oa/*'
   - 'cms/*'
+  - 'server'
   - 'shared/*'
