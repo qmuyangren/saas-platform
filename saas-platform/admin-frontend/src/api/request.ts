@@ -1,8 +1,8 @@
-import axios from 'axios';
-import type { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import { useAuthStore } from '@/stores/authStore';
 
 // 创建 axios 实例
-const request: AxiosInstance = axios.create({
+const request = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api/v1',
   timeout: 30000,
   headers: {
@@ -13,12 +13,12 @@ const request: AxiosInstance = axios.create({
 // 请求拦截器
 request.interceptors.request.use(
   (config) => {
-    // 添加认证 Token
-    const token = localStorage.getItem('accessToken');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
+    const { accessToken } = useAuthStore.getState();
     
+    if (accessToken) {
+      config.headers.Authorization = `Bearer ${accessToken}`;
+    }
+
     // 添加时间戳防缓存
     if (config.method === 'get') {
       config.params = {
@@ -26,7 +26,7 @@ request.interceptors.request.use(
         _t: Date.now(),
       };
     }
-    
+
     return config;
   },
   (error) => {
@@ -41,7 +41,7 @@ request.interceptors.response.use(
     
     // 如果响应成功
     if (data.success) {
-      return data;
+      return data.data;
     }
     
     // 如果响应失败
@@ -54,8 +54,9 @@ request.interceptors.response.use(
       
       switch (status) {
         case 401:
-          // Token 失效，跳转登录
-          localStorage.removeItem('accessToken');
+          // Token 失效，清除登录状态
+          const { clearAuth } = useAuthStore.getState();
+          clearAuth();
           window.location.href = '/login';
           break;
         case 403:
@@ -76,22 +77,17 @@ request.interceptors.response.use(
   }
 );
 
-// 导出请求方法
 export default request;
 
-// 导出快捷方法
-export const get = <T = any>(url: string, config?: AxiosRequestConfig): Promise<T> => {
-  return request.get(url, config);
-};
+// 快捷方法
+export const get = <T = any>(url: string, config?: AxiosRequestConfig): Promise<T> =>
+  request.get(url, config);
 
-export const post = <T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> => {
-  return request.post(url, data, config);
-};
+export const post = <T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> =>
+  request.post(url, data, config);
 
-export const put = <T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> => {
-  return request.put(url, data, config);
-};
+export const put = <T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> =>
+  request.put(url, data, config);
 
-export const del = <T = any>(url: string, config?: AxiosRequestConfig): Promise<T> => {
-  return request.delete(url, config);
-};
+export const del = <T = any>(url: string, config?: AxiosRequestConfig): Promise<T> =>
+  request.delete(url, config);
