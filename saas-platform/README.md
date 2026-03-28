@@ -20,51 +20,34 @@
 
 ---
 
-## 目录结构
+## 项目结构
 
 ```
-saas-platform/
-├── admin/                    # 后台管理项目 ⭐
-│   └── frontend/             # 后台管理前端
-│       ├── src/
-│       ├── public/
-│       ├── package.json
-│       └── ...
+/workspace/
+├── saas-platform/          # 主项目 (文档 + 协调)
+│   ├── docs/               # 项目文档
+│   └── knowledge/          # 知识库
 │
-├── ecommerce/                # 电商项目 (后续)
-│   └── frontend/             # 电商前端
-│
-├── oa/                       # OA 项目 (后续)
-│   └── frontend/             # OA 前端
-│
-├── cms/                      # CMS 项目 (后续)
-│   └── frontend/             # CMS 前端
-│
-├── server/                   # 统一后端服务 ⭐
+├── admin-frontend/         # 后台管理前端 (独立仓库) ⭐
 │   ├── src/
-│   │   ├── controllers/      # 控制器
-│   │   ├── services/         # 服务层
-│   │   ├── routes/           # 路由
-│   │   ├── middleware/       # 中间件
-│   │   └── index.ts          # 入口文件
-│   ├── prisma/               # 数据库配置
-│   │   ├── schema.prisma     # 数据模型
-│   │   └── migrations/       # 数据库迁移
+│   ├── package.json
+│   └── README.md
+│
+├── server/                 # 统一后端服务 (独立仓库) ⭐
+│   ├── src/
+│   ├── prisma/
 │   └── package.json
 │
-├── shared/                   # 共享代码
-│   ├── components/           # 共享组件
-│   ├── utils/                # 共享工具
-│   └── types/                # 共享类型
-│
-├── docs/                     # 项目文档
-│   ├── 01-requirements/      # 需求文档
-│   ├── 02-technical/         # 技术文档
-│   ├── 03-guides/            # 使用指南
-│   └── 04-architecture/      # 架构设计
-│
-└── knowledge/                # 知识库
+├── ecommerce-frontend/     # 电商前端 (独立仓库，后续)
+├── oa-frontend/            # OA 前端 (独立仓库，后续)
+└── cms-frontend/           # CMS 前端 (独立仓库，后续)
 ```
+
+**每个项目都是独立的 Git 仓库**：
+- ✅ 独立版本控制
+- ✅ 独立依赖管理
+- ✅ 独立 CI/CD
+- ✅ 独立部署
 
 ---
 
@@ -75,18 +58,17 @@ saas-platform/
 │                    多前端 + 统一后端架构                        │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│  前端层：                                                       │
+│  前端层 (独立仓库):                                             │
 │  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐       │
 │  │  admin   │  │ecommerce │  │    oa    │  │   cms    │  ...  │
 │  │ frontend │  │ frontend │  │ frontend │  │ frontend │       │
 │  └────┬─────┘  └────┬─────┘  └────┬─────┘  └────┬─────┘       │
-│       │             │             │             │               │
 │       └─────────────┴─────────────┴─────────────┘               │
 │                           │                                     │
 │                           │ API 调用                             │
 │                           ↓                                     │
 │  ┌─────────────────────────────────────────────────────────┐   │
-│  │                    server/ (统一后端)                    │   │
+│  │              server/ (统一后端服务)                       │   │
 │  │  ┌──────────────────────────────────────────────────┐   │   │
 │  │  │  • 认证授权 (登录/权限/Token)                     │   │   │
 │  │  │  • 用户管理                                      │   │   │
@@ -108,146 +90,64 @@ saas-platform/
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-**架构优点**：
-- ✅ 所有业务共用一套用户体系和权限系统
-- ✅ 数据集中管理，避免数据孤岛
-- ✅ 后端统一维护，降低运维成本
-- ✅ 前端独立开发部署，灵活高效
-- ✅ 适合 SaaS 多租户场景
-
 ---
 
-## 技术栈
+## 仓库列表
 
-### 前端
-- React 18 + TypeScript 5
-- Vite 5
-- Ant Design 6
-- Zustand (状态管理)
-- React Router 7
+### 主项目
 
-### 后端
-- Fastify 4 / NestJS 10
-- Node.js 20 + TypeScript 5
-- Prisma 5 (ORM)
-- MySQL 8.0
-- Redis 7
+| 仓库 | 说明 | 状态 |
+|------|------|------|
+| [saas-platform](https://github.com/qmuyangren/saas-platform) | 主项目 (文档 + 协调) | ✅ 已创建 |
 
-### 移动端
-- uni-app 3 + Vue 3
+### 前端项目
+
+| 仓库 | 说明 | 状态 |
+|------|------|------|
+| admin-frontend | 后台管理前端 | ✅ 已创建 |
+| ecommerce-frontend | 电商前端 | ⏳ 计划中 |
+| oa-frontend | OA 前端 | ⏳ 计划中 |
+| cms-frontend | CMS 前端 | ⏳ 计划中 |
+
+### 后端服务
+
+| 仓库 | 说明 | 状态 |
+|------|------|------|
+| server | 统一后端服务 | ⏳ 待创建 |
 
 ---
 
 ## 快速开始
 
-### 环境要求
-- Node.js >= 20
-- pnpm >= 8
-- MySQL >= 8.0
-- Redis >= 7
-
-### 安装依赖
+### admin-frontend (后台管理前端)
 
 ```bash
 # 进入项目目录
-cd saas-platform
+cd admin-frontend
 
-# 安装所有依赖
+# 安装依赖
 pnpm install
-```
 
-### 开发模式
-
-```bash
-# 启动后台管理前端
-pnpm dev:admin
-
-# 启动统一后端服务
-pnpm dev:server
-
-# 启动所有项目
+# 启动开发服务器
 pnpm dev
+
+# 访问 http://localhost:5173
 ```
 
-### 构建
+### server (统一后端服务)
 
 ```bash
-# 构建后台管理前端
-pnpm build:admin
+# 进入项目目录
+cd server
 
-# 构建后端服务
-pnpm build:server
+# 安装依赖
+pnpm install
 
-# 构建所有项目
-pnpm build
+# 启动开发服务器
+pnpm dev
+
+# 访问 http://localhost:3000
 ```
-
----
-
-## 项目说明
-
-### admin/frontend - 后台管理前端 ⭐
-
-**当前状态**: 已完成
-
-**功能**:
-- ✅ 用户登录
-- ✅ 强制改密
-- ✅ 系统配置
-- ✅ 用户管理
-- ✅ 角色权限
-- ✅ 字典管理
-- ✅ 系统日志
-
-**技术栈**:
-- React 18 + TypeScript
-- Ant Design 6
-- Zustand
-
-### server - 统一后端服务 ⭐
-
-**当前状态**: 待创建
-
-**功能模块**:
-- 认证授权 (登录/权限/Token)
-- 用户管理
-- 角色权限
-- 系统配置
-- 字典管理
-- 日志管理
-- 电商 API (商品/订单/购物车)
-- OA API (考勤/请假/会议)
-- CMS API (文章/栏目/评论)
-
-**技术栈**:
-- Fastify 4 + TypeScript
-- Prisma 5 (ORM)
-- MySQL 8.0
-- Redis 7
-
-### ecommerce/frontend - 电商前端 (计划中)
-
-**功能**:
-- 商品展示
-- 购物车
-- 订单管理
-- 支付集成
-
-### oa/frontend - OA 前端 (计划中)
-
-**功能**:
-- 考勤管理
-- 请假管理
-- 会议管理
-- 任务管理
-
-### cms/frontend - CMS 前端 (计划中)
-
-**功能**:
-- 文章管理
-- 栏目管理
-- 标签管理
-- 评论管理
 
 ---
 
@@ -258,8 +158,8 @@ pnpm build
 - [x] 数据库设计
 - [x] API 规范设计
 - [x] 目录结构整理
-- [x] 前端项目创建
-- [ ] 后端 API 创建
+- [x] 前端项目创建 (admin-frontend)
+- [ ] 后端 API 创建 (server)
 - [ ] 后端开发
 - [ ] 前后端联调
 - [ ] 测试验证
@@ -279,53 +179,24 @@ pnpm build
 - [技术文档](docs/02-technical/)
 - [使用指南](docs/03-guides/)
 - [架构设计](docs/04-architecture/)
-- [目录结构规范](docs/PROJECT_STRUCTURE.md)
 
 ---
 
-## Git 规范
+## 技术栈
 
-### 分支策略
-- `main` - 生产环境
-- `develop` - 开发分支
-- `feature/*` - 功能分支
-- `fix/*` - 修复分支
-- `release/*` - 发布分支
+### 前端
+- React 18 + TypeScript 5
+- Vite 5
+- Ant Design 6
+- Zustand (状态管理)
+- React Router 7
 
-### 提交规范
-```bash
-feat(admin): 实现后台登录功能
-fix(auth): 修复 Token 刷新问题
-docs(readme): 更新项目说明
-refactor(api): 重构 API 调用层
-test(login): 添加登录测试用例
-```
-
----
-
-## 核心功能
-
-### 认证授权
-- 账号密码登录
-- 手机/邮箱验证码登录
-- 第三方登录 (微信/钉钉/GitHub)
-- 自动注册
-- 强制改密
-- IP 黑名单
-- 用户状态管理 (启用/禁用/锁定)
-
-### 用户管理
-- 用户 CRUD
-- 角色权限
-- 批量操作
-- 导入导出
-
-### 系统配置
-- 系统基本信息
-- 短信/邮箱配置
-- 存储配置
-- 字典管理
-- 通知公告
+### 后端
+- Fastify 4 / NestJS 10
+- Node.js 20 + TypeScript 5
+- Prisma 5 (ORM)
+- MySQL 8.0
+- Redis 7
 
 ---
 
