@@ -21,6 +21,25 @@ description: "全栈开发技能。实现功能 + 单元测试 + 项目启动验
 
 ## 工作流程
 
+### Step 0: Git 工作流 ← 第一步！
+
+```bash
+# 检查当前分支
+exec: git branch --show-current
+
+# 创建特性分支 (如不存在)
+exec: git checkout -b feature/user-login
+
+# 确认分支
+exec: git branch
+# 确认：当前在 feature/user-login 分支
+```
+
+**分支命名规范**:
+- `feature/xxx` - 新功能
+- `fix/xxx` - Bug 修复
+- `refactor/xxx` - 重构
+
 ### Step 1: 环境检查
 
 ```bash
@@ -163,7 +182,34 @@ exec: cat coverage/coverage-summary.json
 # 要求：关键路径 100%
 ```
 
-### Step 7: 验收报告
+### Step 7: Git 提交
+
+```bash
+# 检查 Git 状态
+exec: git status
+
+# 提交代码 (小步提交)
+exec: git add apps/ecommerce/backend/src/
+exec: git commit -m "feat: 实现用户登录 API"
+
+exec: git add apps/ecommerce/frontend/src/
+exec: git commit -m "feat: 实现登录页面"
+
+exec: git add tests/
+exec: git commit -m "test: 添加登录测试"
+
+# 推送到远程
+exec: git push origin feature/user-login
+```
+
+**提交规范**:
+- `feat:` - 新功能
+- `fix:` - Bug 修复
+- `test:` - 测试
+- `docs:` - 文档
+- `refactor:` - 重构
+
+### Step 8: 验收报告
 
 输出验收报告：
 

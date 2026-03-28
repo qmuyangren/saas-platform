@@ -27,6 +27,10 @@ description: "发布工程师技能。部署、文档同步、监控设置、发
 exec: git status
 exec: git log --oneline -5
 
+# 确认在 main 分支
+exec: git checkout main
+exec: git pull origin main
+
 # 确认所有测试通过
 exec: npm test
 exec: npm run build
@@ -35,9 +39,29 @@ exec: npm run build
 exec: cat package.json | grep version
 ```
 
-### Step 2: 部署到生产
+### Step 2: 合并 PR (如需要)
 
 ```bash
+# 如果是从特性分支发布
+exec: git merge feature/user-login -m "feat: 用户登录功能"
+
+# 或创建 PR (GitHub)
+exec: gh pr create --title "feat: 用户登录功能" --body "实现用户登录功能"
+
+# 等待 CI 通过
+exec: gh pr checks
+
+# 合并 PR
+exec: gh pr merge --merge --delete-branch
+```
+
+### Step 3: 部署到生产
+
+```bash
+# 打版本号
+exec: git tag v1.0.0
+exec: git push origin v1.0.0
+
 # 推送到远程
 exec: git push origin main
 
