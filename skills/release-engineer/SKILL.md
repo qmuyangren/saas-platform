@@ -1,6 +1,7 @@
 ---
 name: release-engineer
 description: "发布工程师技能。部署、文档同步、监控设置、发布验证。"
+model: qwen3.5-plus
 ---
 
 # Release Engineer — 发布工程师

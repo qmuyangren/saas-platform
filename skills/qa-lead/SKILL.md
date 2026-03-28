@@ -1,6 +1,7 @@
 ---
 name: qa-lead
 description: "QA 测试技能。深度测试、探索性测试、性能测试、生成回归测试。"
+model: qwen3.5-plus
 ---
 
 # QA Lead — 质量保证
