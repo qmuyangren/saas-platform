@@ -22,37 +22,40 @@
 ## 目录结构
 
 ```
-saas-platform/              # 【项目根目录】
-├── apps/                   # 应用代码
-│   ├── admin/             # 后台管理系统 ⭐
-│   ├── ecommerce/         # 电商系统 (后续)
-│   ├── oa/                # OA 系统 (后续)
-│   └── cms/               # CMS 系统 (后续)
+saas-platform/
+├── admin/                    # 后台管理项目 ⭐
+│   ├── frontend/             # 后台管理前端
+│   │   ├── src/
+│   │   ├── public/
+│   │   ├── package.json
+│   │   └── ...
+│   └── backend/              # 后台管理后端 (待创建)
 │
-├── backend/                # 后端代码
-│   ├── admin-api/         # 后台管理 API ⭐
-│   └── ecommerce-api/     # 电商 API (后续)
+├── ecommerce/                # 电商项目 (后续)
+│   ├── frontend/             # 电商前端
+│   └── backend/              # 电商后端
 │
-├── packages/               # 共享包
-│   ├── ui/                # UI 组件库
-│   ├── utils/             # 工具函数
-│   └── types/             # 类型定义
+├── oa/                       # OA 项目 (后续)
+│   ├── frontend/
+│   └── backend/
 │
-├── docs/                   # 项目文档
-│   ├── 01-requirements/   # 需求文档
-│   ├── 02-technical/      # 技术文档
-│   ├── 03-guides/         # 使用指南
-│   └── 04-architecture/   # 架构设计
+├── cms/                      # CMS 项目 (后续)
+│   ├── frontend/
+│   └── backend/
 │
-├── knowledge/              # 知识库
-├── scripts/                # 脚本工具
-└── types/                  # 全局类型
+├── shared/                   # 共享代码
+│   ├── components/           # 共享组件
+│   ├── utils/                # 共享工具
+│   └── types/                # 共享类型
+│
+├── docs/                     # 项目文档
+│   ├── 01-requirements/      # 需求文档
+│   ├── 02-technical/         # 技术文档
+│   ├── 03-guides/            # 使用指南
+│   └── 04-architecture/      # 架构设计
+│
+└── knowledge/                # 知识库
 ```
-
-**注意**：
-- `skills/` - AI 技能（在 workspace 根目录，不属于项目代码）
-- `memory/` - AI 记忆（在 workspace 根目录，不属于项目代码）
-- `knowledge/` - 知识库（属于项目）
 
 ---
 
@@ -99,24 +102,85 @@ pnpm install
 
 ```bash
 # 启动后台管理前端
-cd apps/admin
-pnpm dev
+pnpm dev:admin
 
-# 启动后端 API (待创建)
-cd backend/admin-api
+# 启动后台管理后端 (待创建)
+pnpm dev:admin-backend
+
+# 启动所有项目
 pnpm dev
 ```
 
 ### 构建
 
 ```bash
+# 构建后台管理前端
+pnpm build:admin
+
 # 构建所有项目
 pnpm build
-
-# 构建单个项目
-cd apps/admin
-pnpm build
 ```
+
+---
+
+## 项目说明
+
+### admin/ - 后台管理系统 ⭐
+
+**当前状态**: 前端已完成，后端待创建
+
+**功能**:
+- ✅ 用户登录
+- ✅ 强制改密
+- ✅ 系统配置
+- ✅ 用户管理
+- ✅ 角色权限
+- ✅ 字典管理
+- ✅ 系统日志
+
+**技术栈**:
+- React 18 + TypeScript
+- Ant Design 6
+- Zustand
+
+**目录**:
+```
+admin/
+├── frontend/        # 前端
+│   ├── src/
+│   │   ├── api/
+│   │   ├── pages/
+│   │   ├── components/
+│   │   └── ...
+│   └── package.json
+└── backend/         # 后端 (待创建)
+    ├── src/
+    └── package.json
+```
+
+### ecommerce/ - 电商系统 (计划中)
+
+**功能**:
+- 商品管理
+- 订单管理
+- 购物车
+- 支付集成
+
+### oa/ - OA 系统 (计划中)
+
+**功能**:
+- 考勤管理
+- 请假管理
+- 会议管理
+- 任务管理
+
+### cms/ - CMS 系统 (计划中)
+
+**功能**:
+- 文章管理
+- 栏目管理
+- 标签管理
+- 评论管理
 
 ---
 

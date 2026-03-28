@@ -1,5 +1,6 @@
-# pnpm Workspace
 packages:
-  - 'apps/*'
-  - 'packages/*'
-  - 'backend/*'
+  - 'admin/*'
+  - 'ecommerce/*'
+  - 'oa/*'
+  - 'cms/*'
+  - 'shared/*'
