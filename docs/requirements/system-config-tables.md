@@ -477,15 +477,18 @@ model AdminUser {
   role        AdminRole @default(OPERATOR)
   permissions String?   // 额外权限 (JSON 数组)
   
-  // 状态
-  status      AdminStatus @default(ACTIVE)
+  // 状态 ⭐
+  status      AdminStatus @default(ACTIVE)  // ACTIVE/DISABLED/LOCKED
   lastLoginAt DateTime?
-  lastLoginIp String?
+  lastLoginIp String?   // 最后登录 IP
   
   // 安全
   failedAttempts Int    @default(0)
-  lockedUntil    DateTime?
+  lockedUntil    DateTime?  // 锁定截止时间
   mustChangePassword Boolean @default(false)  // 首次登录强制改密
+  
+  // IP 限制 (可选)
+  allowedIpRanges String?  // 允许的 IP 段 (JSON 数组，仅该 IP 可登录)
   
   // 双因素认证 (可选)
   twoFactorEnabled Boolean @default(false)
@@ -497,6 +500,7 @@ model AdminUser {
   @@index([username])
   @@index([email])
   @@index([status])
+  @@index([lastLoginIp])
 }
 
 enum AdminRole {
@@ -507,10 +511,38 @@ enum AdminRole {
 }
 
 enum AdminStatus {
-  ACTIVE
-  DISABLED
-  LOCKED
+  ACTIVE    // 启用 (正常状态)
+  DISABLED  // 禁用 (管理员手动禁用)
+  LOCKED    // 锁定 (登录失败次数过多自动锁定)
 }
+```
+
+**用户状态说明**:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    用户状态说明                                 │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ACTIVE (启用)                                                  │
+│  • 正常状态，可以登录                                          │
+│  • 默认状态                                                    │
+│  • 管理员可手动禁用                                            │
+│                                                                 │
+│  DISABLED (禁用)                                                │
+│  • 管理员手动禁用                                              │
+│  • 永久禁用，除非管理员重新启用                                │
+│  • 登录时提示"账号已被禁用，请联系管理员"                      │
+│  • 用于：离职员工/违规账号/临时停用                            │
+│                                                                 │
+│  LOCKED (锁定)                                                  │
+│  • 登录失败次数过多自动锁定                                    │
+│  • 有锁定截止时间 (lockedUntil)                                │
+│  • 锁定时效过后自动解锁                                        │
+│  • 登录时提示"账号已锁定，请在 XX:XX 后重试"                    │
+│  • 用于：暴力破解防护                                          │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
 **示例数据**:

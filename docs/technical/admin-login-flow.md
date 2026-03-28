@@ -12,7 +12,7 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    后台管理登录流程                             │
+│                    后台管理登录流程 (增强版)                    │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │  Step 1: 打开后台管理前端                                       │
@@ -65,6 +65,77 @@
 │  │    "password": "Admin123",                               │  │
 │  │    "captcha": "abcd"  // 如果需要                        │  │
 │  │  }                                                        │  │
+│  │  自动附带：                                               │  │
+│  │  • X-Forwarded-For: 用户真实 IP                           │  │
+│  │  • X-Real-IP: 用户 IP                                     │  │
+│  └──────────────────────────────────────────────────────────┘  │
+│                           ↓                                     │
+│  Step 4.1: 后端验证 - IP 黑名单检查 ⭐ NEW                      │
+│  ┌──────────────────────────────────────────────────────────┐  │
+│  │  1. 获取用户 IP                                           │  │
+│  │     const userIp = req.ip || req.headers['x-real-ip'];  │  │
+│  │                                                          │  │
+│  │  2. 检查 IP 是否在黑名单中                                 │  │
+│  │     const isBlacklisted = await checkIpBlacklist(userIp);│  │
+│  │     if (isBlacklisted) {                                 │  │
+│  │       throw new BusinessError(                          │  │
+│  │         'IP_BLACKLISTED',                               │  │
+│  │         '您的 IP 已被禁止访问',                           │  │
+│  │         403                                              │  │
+│  │       );                                                 │  │
+│  │     }                                                    │  │
+│  │                                                          │  │
+│  │  3. 检查 IP 是否在白名单中 (可选，仅内网访问时)             │  │
+│  │     if (internalOnly && !isIpInWhitelist(userIp)) {     │  │
+│  │       throw new BusinessError(                          │  │
+│  │         'IP_NOT_ALLOWED',                               │  │
+│  │         '仅允许内网访问',                                 │  │
+│  │         403                                              │  │
+│  │       );                                                 │  │
+│  │     }                                                    │  │
+│  └──────────────────────────────────────────────────────────┘  │
+│                           ↓                                     │
+│  Step 4.2: 后端验证 - 用户状态检查 ⭐ NEW                       │
+│  ┌──────────────────────────────────────────────────────────┐  │
+│  │  1. 查询用户信息                                          │  │
+│  │     const user = await prisma.adminUser.findUnique({    │  │
+│  │       where: { username }                                │  │
+│  │     });                                                  │  │
+│  │                                                          │  │
+│  │  2. 检查用户是否存在                                      │  │
+│  │     if (!user) {                                         │  │
+│  │       throw new BusinessError(                          │  │
+│  │         'USER_NOT_FOUND',                               │  │
+│  │         '用户不存在',                                     │  │
+│  │         404                                              │  │
+│  │       );                                                 │  │
+│  │     }                                                    │  │
+│  │                                                          │  │
+│  │  3. 检查用户状态                                          │  │
+│  │     if (user.status === 'DISABLED') {                   │  │
+│  │       throw new BusinessError(                          │  │
+│  │         'USER_DISABLED',                                │  │
+│  │         '账号已被禁用，请联系管理员',                     │  │
+│  │         403                                              │  │
+│  │       );                                                 │  │
+│  │     }                                                    │  │
+│  │                                                          │  │
+│  │     if (user.status === 'LOCKED') {                     │  │
+│  │       // 检查锁是否已过期                                 │  │
+│  │       if (user.lockedUntil && user.lockedUntil > new Date()) {│
+│  │         throw new BusinessError(                        │  │
+│  │           'USER_LOCKED',                               │  │
+│  │           `账号已锁定，请在 ${user.lockedUntil} 后重试`,   │  │
+│  │           403                                            │  │
+│  │         );                                               │  │
+│  │       } else {                                           │  │
+│  │         // 锁已过期，自动解锁                             │  │
+│  │         await prisma.adminUser.update({                 │  │
+│  │           where: { id: user.id },                       │  │
+│  │           data: { status: 'ACTIVE', lockedUntil: null } │  │
+│  │         });                                              │  │
+│  │       }                                                  │  │
+│  │     }                                                    │  │
 │  └──────────────────────────────────────────────────────────┘  │
 │                           ↓                                     │
 │  Step 5: 验证成功，返回 Token                                   │
