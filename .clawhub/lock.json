@@ -1,0 +1,81 @@
+{
+  "version": 1,
+  "skills": {
+    "agentic-coding": {
+      "version": "1.0.0",
+      "installedAt": 1774620983272
+    },
+    "coding-as-dressing": {
+      "version": "1.0.0",
+      "installedAt": 1774620983394
+    },
+    "vibe-coding": {
+      "version": "1.0.0",
+      "installedAt": 1774620984208
+    },
+    "coding": {
+      "version": "1.0.3",
+      "installedAt": 1774620984659
+    },
+    "coding-2": {
+      "version": "0.1.0",
+      "installedAt": 1774620990656
+    },
+    "find-skills-skill": {
+      "version": "1.0.0",
+      "installedAt": 1774621885192
+    },
+    "skill-vetter": {
+      "version": "1.0.0",
+      "installedAt": 1774621803158
+    },
+    "summarize": {
+      "version": "1.0.0",
+      "installedAt": 1774621811086
+    },
+    "gog": {
+      "version": "1.0.0",
+      "installedAt": 1774621811823
+    },
+    "openclaw-tavily-search": {
+      "version": "0.1.0",
+      "installedAt": 1774621824879
+    },
+    "self-improving": {
+      "version": "1.2.16",
+      "installedAt": 1774622787252
+    },
+    "openclaw-github-assistant": {
+      "version": "2.0.1",
+      "installedAt": 1774621871701
+    },
+    "proactive-agent-lite": {
+      "version": "1.0.0",
+      "installedAt": 1774621884979
+    },
+    "notion": {
+      "version": "1.0.0",
+      "installedAt": 1774621885128
+    },
+    "github": {
+      "version": "1.0.0",
+      "installedAt": 1774622341902
+    },
+    "xiucheng-self-improving-agent": {
+      "version": "1.0.0",
+      "installedAt": 1774622423478
+    },
+    "skill-creator": {
+      "version": "0.1.0",
+      "installedAt": 1774622527971
+    },
+    "ontology": {
+      "version": "1.0.4",
+      "installedAt": 1774623603136
+    },
+    "auto-updater": {
+      "version": "1.0.0",
+      "installedAt": 1774624081813
+    }
+  }
+}
