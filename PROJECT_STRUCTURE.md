@@ -10,23 +10,64 @@
 ```
 /workspace/
 │
-├── apps/                      # 应用代码
-│   ├── web/                   # Web 前端 (React)
-│   ├── mobile/                # 移动端 (uni-app)
-│   ├── admin/                 # 管理后台
-│   └── api/                   # API 服务 (Node.js)
+├── apps/                      # 应用代码 (按业务划分)
+│   ├── ecommerce/             # 电商业务
+│   │   ├── frontend/          # 电商前端 (React)
+│   │   ├── backend/           # 电商后端 (Node.js)
+│   │   └── mobile/            # 电商移动端 (uni-app)
+│   │
+│   ├── oa/                    # OA 业务
+│   │   ├── frontend/
+│   │   ├── backend/
+│   │   └── mobile/
+│   │
+│   ├── cms/                   # CMS 业务
+│   │   ├── frontend/
+│   │   ├── backend/
+│   │   └── mobile/
+│   │
+│   ├── party-building/        # 党建业务
+│   │   ├── frontend/
+│   │   ├── backend/
+│   │   └── mobile/
+│   │
+│   └── campus/                # 校园业务
+│       ├── frontend/
+│       ├── backend/
+│       └── mobile/
 │
-├── packages/                  # 共享包
-│   ├── core/                  # 核心业务逻辑
+├── packages/                  # 共享包 (所有业务共用)
 │   ├── shared/                # 共享工具/类型
+│   │   ├── types/             # TypeScript 类型
+│   │   ├── utils/             # 工具函数
+│   │   ├── constants/         # 常量
+│   │   └── api-client/        # API 客户端
+│   │
+│   ├── core/                  # 核心业务 (用户/权限/多租户)
+│   │   ├── auth/
+│   │   ├── user/
+│   │   ├── tenant/
+│   │   └── permission/
+│   │
 │   ├── ui/                    # UI 组件库
+│   │   ├── Button/
+│   │   ├── Input/
+│   │   └── ...
+│   │
 │   └── config/                # 配置文件
+│
+├── services/                  # 独立服务 (可选)
+│   ├── api-gateway/
+│   ├── auth-service/
+│   └── file-service/
 │
 ├── docs/                      # 所有文档
 │   ├── architecture/          # 架构设计
 │   ├── api/                   # API 文档
 │   ├── business-logic/        # 业务流程
 │   ├── requirements/          # 需求文档
+│   ├── ecommerce/             # 电商文档
+│   ├── oa/                    # OA 文档
 │   └── meetings/              # 会议记录
 │
 ├── tests/                     # 测试代码
@@ -75,6 +116,7 @@
 ├── SOUL.md                    # Agent 核心
 ├── TOOLS.md                   # 工具配置
 ├── HEARTBEAT.md               # 心跳任务
+├── PROJECT_STRUCTURE.md       # 本规范
 └── README.md                  # 项目说明
 ```
 
@@ -84,11 +126,12 @@
 
 ### ✅ 允许的操作
 
-1. **代码文件** → 只能放在 `apps/` 或 `packages/`
-2. **文档文件** → 只能放在 `docs/` 或 `knowledge/`
-3. **测试文件** → 只能放在 `tests/` 或 代码同目录
-4. **配置文件** → 根目录或 `packages/config/`
-5. **临时笔记** → `notes/` (需标注日期，定期清理)
+1. **业务代码** → `apps/{业务名}/{frontend|backend|mobile}/`
+2. **共享代码** → `packages/{shared|core|ui}/`
+3. **文档文件** → `docs/` 或 `knowledge/`
+4. **测试文件** → `tests/` 或 代码同目录
+5. **配置文件** → 根目录或 `packages/config/`
+6. **临时笔记** → `notes/` (需标注日期，定期清理)
 
 ### ❌ 禁止的操作
 
@@ -96,6 +139,22 @@
 2. **禁止**在 `~/.openclaw/` 其他位置创建项目文件
 3. **禁止**创建未登记的目录结构
 4. **禁止**将文档散落在代码目录中
+5. **禁止**业务代码直接放在 `apps/` 下 (必须按业务分目录)
+
+---
+
+## 依赖规则
+
+```
+依赖方向 (只能向下，不能循环):
+
+packages/shared   ← 最底层，无依赖
+      ↓
+packages/core     ← 依赖 shared
+packages/ui       ← 依赖 shared
+      ↓
+apps/{业务}       ← 依赖 packages/*
+```
 
 ---
 
