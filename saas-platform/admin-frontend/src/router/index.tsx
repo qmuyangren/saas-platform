@@ -1,10 +1,12 @@
-import { createBrowserRouter } from 'react-router-dom';
-import App from '../App';
-import LoginPage from '../pages/Login';
-import ChangePasswordPage from '../pages/ChangePassword';
-import DashboardPage from '../pages/Dashboard';
+import { createBrowserRouter, RouteObject } from 'react-router-dom';
+import AuthGuard from './AuthGuard';
+import MainLayout from '@/components/Layout/MainLayout';
+import LoginPage from '@/pages/Login';
+import DashboardPage from '@/pages/Dashboard';
+import ChangePasswordPage from '@/pages/ChangePassword';
 
-const router = createBrowserRouter([
+// 公开路由（不需要认证）
+const publicRoutes: RouteObject[] = [
   {
     path: '/login',
     element: <LoginPage />,
@@ -13,12 +15,24 @@ const router = createBrowserRouter([
     path: '/auth/change-password',
     element: <ChangePasswordPage />,
   },
+];
+
+// 受保护的路由（需要认证）
+const protectedRoutes: RouteObject[] = [
   {
     path: '/',
-    element: <App />,
+    element: (
+      <AuthGuard>
+        <MainLayout />
+      </AuthGuard>
+    ),
     children: [
       {
         index: true,
+        element: <DashboardPage />,
+      },
+      {
+        path: 'dashboard',
         element: <DashboardPage />,
       },
       // 后续添加其他路由
@@ -32,6 +46,9 @@ const router = createBrowserRouter([
       // },
     ],
   },
-]);
+];
+
+// 合并所有路由
+const router = createBrowserRouter([...publicRoutes, ...protectedRoutes]);
 
 export default router;

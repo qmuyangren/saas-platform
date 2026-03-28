@@ -1,22 +1,15 @@
 import { Tabs } from 'antd';
-import { useState } from 'react';
 import type { TabsProps } from 'antd';
-
-interface Tab {
-  key: string;
-  label: string;
-  closable?: boolean;
-}
+import { useTabsStore } from '@/stores/tabs.store';
+import { useNavigate } from 'react-router-dom';
 
 const TabsView: React.FC = () => {
-  const [activeTab, setActiveTab] = useState('/dashboard');
-  const [tabs, setTabs] = useState<Tab[]>([
-    { key: '/dashboard', label: '仪表盘', closable: false },
-  ]);
+  const navigate = useNavigate();
+  const { tabs, activeTab, addTab, removeTab, setActiveTab } = useTabsStore();
 
   const handleTabChange = (key: string) => {
     setActiveTab(key);
-    // TODO: 路由跳转
+    navigate(key);
   };
 
   const handleTabEdit = (
@@ -24,12 +17,7 @@ const TabsView: React.FC = () => {
     action: string,
   ) => {
     if (action === 'remove') {
-      const newTabs = tabs.filter((tab) => tab.key !== targetKey);
-      setTabs(newTabs);
-      
-      if (activeTab === targetKey && newTabs.length > 0) {
-        setActiveTab(newTabs[newTabs.length - 1].key);
-      }
+      removeTab(targetKey as string);
     }
   };
 
@@ -47,7 +35,7 @@ const TabsView: React.FC = () => {
         onEdit={handleTabEdit}
         items={tabs.map((tab) => ({
           key: tab.key,
-          label: tab.label,
+          label: tab.title,
           closable: tab.closable,
         }))}
         style={{ marginBottom: 0 }}

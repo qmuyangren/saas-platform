@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { Layout, Menu } from 'antd';
 import {
   DashboardOutlined,
@@ -8,6 +9,7 @@ import {
   FileTextOutlined,
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
+import { useTabsStore } from '@/stores/tabs.store';
 import Header from './Header';
 import TabsView from './TabsView';
 import SettingsDrawer from '../Settings/SettingsDrawer';
@@ -42,15 +44,38 @@ const menuItems: MenuProps['items'] = [
   },
 ];
 
-const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const MainLayout: React.FC = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [collapsed, setCollapsed] = useState(false);
   const [settingsVisible, setSettingsVisible] = useState(false);
-  const [currentMenu, setCurrentMenu] = useState('/dashboard');
+  const { addTab, setActiveTab } = useTabsStore();
 
   const handleMenuClick: MenuProps['onClick'] = (e) => {
-    setCurrentMenu(e.key);
-    // TODO: 路由跳转
+    const path = e.key;
+    navigate(path);
+    addTab({
+      key: path,
+      title: menuItems.find((item) => item?.key === path)?.label as string || path,
+      path,
+      closable: true,
+    });
+    setActiveTab(path);
   };
+
+  // 初始化：添加当前路由到标签页
+  if (location.pathname !== '/' && !location.pathname.startsWith('/auth')) {
+    const currentPath = location.pathname;
+    const menuItem = menuItems.find((item) => item?.key === currentPath);
+    if (menuItem) {
+      addTab({
+        key: currentPath,
+        title: menuItem.label as string,
+        path: currentPath,
+        closable: true,
+      });
+    }
+  }
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
@@ -71,19 +96,20 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         <Menu
           theme="light"
           mode="inline"
-          selectedKeys={[currentMenu]}
+          selectedKeys={[location.pathname]}
           items={menuItems}
           onClick={handleMenuClick}
         />
       </Sider>
       <Layout style={{ marginLeft: collapsed ? 80 : 200, transition: 'all 0.2s' }}>
         <Header
+          collapsed={collapsed}
           onCollapse={() => setCollapsed(!collapsed)}
           onOpenSettings={() => setSettingsVisible(true)}
         />
         <TabsView />
         <Content style={{ margin: '24px 16px', padding: 24, background: '#fff', minHeight: 280 }}>
-          {children}
+          <Outlet />
         </Content>
       </Layout>
       <SettingsDrawer
