@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouteObject } from 'react-router-dom';
+import { createBrowserRouter, type RouteObject } from 'react-router-dom';
 import AuthGuard from './AuthGuard';
 import MainLayout from '@/components/Layout/MainLayout';
 import LoginPage from '@/pages/Login';
@@ -34,15 +34,6 @@ const routes: RouteObject[] = [
         path: 'dashboard',
         element: <DashboardPage />,
       },
-      // 后续添加其他路由
-      // {
-      //   path: 'users',
-      //   element: <UserListPage />,
-      // },
-      // {
-      //   path: 'roles',
-      //   element: <RoleListPage />,
-      // },
     ],
   },
 ];
