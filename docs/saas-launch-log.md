@@ -37,17 +37,22 @@ Leader: leader
 ### 已启动
 
 ```bash
-✅ leader Agent 已启动
+✅ leader Agent 已完成
 clawteam spawn -t saas-platform -n leader \
   --task "使用 product-ceo 技能分析用户登录功能需求"
 
-工作区：/Users/nick/.clawteam/workspaces/saas-platform/leader
-Tmux 会话：clawteam-saas-platform:leader
+输出文档：docs/requirements/user-login.md (13KB)
+
+✅ architect Agent 已启动
+clawteam spawn -t saas-platform -n architect \
+  --task "使用 architect 技能设计用户登录系统架构"
+
+工作区：/Users/nick/.clawteam/workspaces/saas-platform/architect
+Tmux 会话：clawteam-saas-platform:architect
 ```
 
 ### 待启动
 
-- [ ] architect - 架构设计
 - [ ] backend - 后端开发
 - [ ] frontend - 前端开发
 - [ ] tester - 测试验证
